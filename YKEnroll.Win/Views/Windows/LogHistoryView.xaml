@@ -1,0 +1,13 @@
+﻿<Window x:Class="YKEnroll.Win.Views.Windows.LogHistoryView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:YKEnroll.Win.Views.Windows"
+        Style="{StaticResource StyledWindow}"
+        mc:Ignorable="d"
+        Title="Log View" Height="650" Width="600">
+    <Grid>
+        <TextBox Text="{Binding LogHistoryString, Mode=OneWay}" TextWrapping="Wrap" VerticalContentAlignment="Top" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"/>
+    </Grid>
+</Window>

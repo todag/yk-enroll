@@ -1,0 +1,34 @@
+﻿<Window x:Class="YKEnroll.Win.Views.Windows.CodeView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:YKEnroll.Win.Views"        
+        xmlns:viewModels="clr-namespace:YKEnroll.Win.ViewModels"
+        Style="{StaticResource StyledWindow}"
+        mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance viewModels:CodeViewModel}"
+        Title="Change codes" Height="170" Width="320">
+    <Grid Margin="10">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!--<TextBlock Grid.Column="0" Grid.ColumnSpan="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text="Change codes" FontSize="14" FontWeight="Bold" Margin="5"/>-->
+        <ToggleButton Grid.Column="1" Grid.Row="1" Content="Change Pin"      IsChecked="{Binding ChangePin}"     Command="{Binding ChangeCodeCommand}" CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}, AncestorLevel=1}}" Width="120" Margin="5"/>
+        <ToggleButton Grid.Column="2" Grid.Row="1" Content="Change Puk"      IsChecked="{Binding ChangePuk}"     Command="{Binding ChangeCodeCommand}" CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}, AncestorLevel=1}}" Width="120" Margin="5"/>
+        <ToggleButton Grid.Column="1" Grid.Row="2" Content="Reset Pin"       IsChecked="{Binding ResetPin}"      Command="{Binding ChangeCodeCommand}" CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}, AncestorLevel=1}}" Width="120" Margin="5"/>
+        <ToggleButton Grid.Column="2" Grid.Row="2" Content="Change Mgmt Key" IsChecked="{Binding ChangeMgmtKey}" Command="{Binding ChangeCodeCommand}" CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}, AncestorLevel=1}}" Width="120" Margin="5"/>
+
+    </Grid>
+</Window>

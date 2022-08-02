@@ -1,0 +1,27 @@
+﻿<Application x:Class="YKEnroll.Win.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:YKEnroll.Win"
+             xmlns:converters="clr-namespace:YKEnroll.Win.Views.Converters"
+             x:ClassModifier="internal">
+    <Application.Resources>
+        <ResourceDictionary>
+            <BooleanToVisibilityConverter x:Key="VisCon"/>
+            <converters:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
+            <converters:InverseBoolToVisConverter x:Key="InverseBoolToVisConverter"/>
+            <converters:InverseNullBoolToVisConverter x:Key="InverseNullBoolToVisConverter"/>
+            <converters:InverseBoolToHiddenConverter x:Key="InverseBoolToHiddenConverter"/>
+            <converters:BoolToHiddenConverter x:Key="BoolToHiddenConverter"/>
+            <converters:ListToStringConverter x:Key="ListToStringConverter"/>
+            <!--<SolidColorBrush x:Key="AccentColorBrush" Color="#007ACC" />-->
+            
+            <ResourceDictionary.MergedDictionaries>
+                <!--<ResourceDictionary Source="Styles/Styles.xaml"/>-->
+                <ResourceDictionary Source="/Styles/Generic.xaml"/>
+                <ResourceDictionary Source="/Styles/StyledWindow.xaml"/>
+                <ResourceDictionary Source="/Styles/Defaults.xaml" />
+                <ResourceDictionary Source="/Styles/Icons.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

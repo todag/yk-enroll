@@ -1,0 +1,194 @@
+﻿<Window x:Class="YKEnroll.Win.Views.Windows.KeyCollectorView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:YKEnroll.Win.Views"        
+        xmlns:viewModels="clr-namespace:YKEnroll.Win.ViewModels"
+        d:DataContext="{d:DesignInstance viewModels:KeyCollectorViewModel}"        
+        
+        mc:Ignorable="d"
+        Height="140" Width="300" SizeToContent="Height">
+    <Window.Style>
+        <Style TargetType="Window" BasedOn="{StaticResource StyledWindow}">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Purpose}" Value="VerifyPivPin">
+                    <Setter Property="Title" Value="Verify PIN Pin"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Purpose}" Value="ChangePivPin">
+                    <Setter Property="Title" Value="Change PIN"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Purpose}" Value="ChangePivPuk">
+                    <Setter Property="Title" Value="Change PUK"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Purpose}" Value="ResetPivPinWithPuk">
+                    <Setter Property="Title" Value="Reset PIN"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Purpose}" Value="AuthenticatePivManagementKey">
+                    <Setter Property="Title" Value="Authenticate Management Key"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Purpose}" Value="ChangePivManagementKey">
+                    <Setter Property="Title" Value="Change Management Key"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Style>
+    <Grid Margin="0,5,0,0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Row="0" Orientation="Vertical">
+            <TextBlock Name="TextBlock_Header" FontSize="18" FontWeight="Bold" HorizontalAlignment="Center" Visibility="Collapsed">
+                <TextBlock.Style>
+                    <Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Purpose}" Value="VerifyPivPin">
+                                <Setter Property="Text" Value="Verify PIN Pin"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Purpose}" Value="ChangePivPin">
+                                <Setter Property="Text" Value="Change PIN"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Purpose}" Value="ChangePivPuk">
+                                <Setter Property="Text" Value="Change PUK"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Purpose}" Value="ResetPivPinWithPuk">
+                                <Setter Property="Text" Value="Reset PIN"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Purpose}" Value="AuthenticatePivManagementKey">
+                                <Setter Property="Text" Value="Authenticate Management Key"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Purpose}" Value="ChangePivManagementKey">
+                                <Setter Property="Text" Value="Change Management Key"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBlock.Style>
+            </TextBlock>
+            <TextBlock Name="TextBlock_Retries" Text="Authentication failed!" Foreground="Red" HorizontalAlignment="Center" Visibility="{Binding IsRetry, Converter={StaticResource VisCon}}"/>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <StackPanel.Style>
+                    <Style TargetType="StackPanel">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding RetriesRemaining}" Value="{x:Null}">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </StackPanel.Style>
+                <TextBlock Text="Retries remaining ("/>
+                <TextBlock Text="{Binding RetriesRemaining}"/>
+                <TextBlock Text=")"/>
+            </StackPanel>
+        </StackPanel>
+
+        <Grid Grid.Row="1" Margin="10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <TextBlock Grid.Column="0" Grid.Row="0" x:Name="TextBlock_CurrentValue" HorizontalAlignment="Right" Margin="5">
+                <TextBlock.Style>
+                    <Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Purpose}" Value="VerifyPivPin">
+                                <Setter Property="Text" Value="Current PIN"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Purpose}" Value="ChangePivPin">
+                                <Setter Property="Text" Value="Current PIN"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Purpose}" Value="ChangePivPuk">
+                                <Setter Property="Text" Value="Current PUK"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Purpose}" Value="ResetPivPinWithPuk">
+                                <Setter Property="Text" Value="Current PUK"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Purpose}" Value="AuthenticatePivManagementKey">
+                                <Setter Property="Text" Value="Management Key"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Purpose}" Value="ChangePivManagementKey">
+                                <Setter Property="Text" Value="Current Management Key"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBlock.Style>
+            </TextBlock>
+            <PasswordBox Grid.Column="1" Grid.Row="0" x:Name="PasswordBox1" Margin="5" Visibility="{Binding ElementName=TextBlock_CurrentValue, Path=Visibility}"/>
+            <Grid Grid.Column="1" Grid.Row="0" Background="White" Opacity="100" Visibility="{Binding UseDefault, Converter={StaticResource VisCon}}">
+                <PasswordBox Grid.Column="1" Grid.Row="0" Margin="5" IsEnabled="False" Password="**************"/>
+            </Grid>
+
+            <CheckBox Grid.Column="1" Grid.Row="1" Content="Use default" Margin="5" VerticalAlignment="Center" IsChecked="{Binding UseDefault}" Visibility="{Binding ElementName=TextBlock_CurrentValue, Path=Visibility}"/>
+
+            <TextBlock Grid.Column="0" Grid.Row="2" x:Name="TextBlock_NewValue" HorizontalAlignment="Right" Margin="5">
+                <TextBlock.Style>
+                    <Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Purpose}" Value="VerifyPivPin">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Purpose}" Value="ChangePivPin">
+                                <Setter Property="Text" Value="New PIN"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Purpose}" Value="ChangePivPuk">
+                                <Setter Property="Text" Value="New PUK"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Purpose}" Value="ResetPivPinWithPuk">
+                                <Setter Property="Text" Value="New PIN"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Purpose}" Value="AuthenticatePivManagementKey">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Purpose}" Value="ChangePivManagementKey">
+                                <Setter Property="Text" Value="New Management Key"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBlock.Style>
+            </TextBlock>
+            <PasswordBox Grid.Column="1" Grid.Row="2" x:Name="PasswordBox2" Margin="5" Visibility="{Binding ElementName=TextBlock_NewValue, Path=Visibility}"/>
+
+            <TextBlock Grid.Column="0" Grid.Row="3" x:Name="TextBlock_ConfirmValue" HorizontalAlignment="Right" Margin="5">
+                <TextBlock.Style>
+                    <Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Purpose}" Value="VerifyPivPin">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Purpose}" Value="ChangePivPin">
+                                <Setter Property="Text" Value="Verify new PIN"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Purpose}" Value="ChangePivPuk">
+                                <Setter Property="Text" Value="Verify new PUK"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Purpose}" Value="ResetPivPinWithPuk">
+                                <Setter Property="Text" Value="Verify new PIN"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Purpose}" Value="AuthenticatePivManagementKey">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Purpose}" Value="ChangePivManagementKey">
+                                <Setter Property="Text" Value="Verify new Management Key"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBlock.Style>
+            </TextBlock>
+            <PasswordBox Grid.Column="1" Grid.Row="3" x:Name="PasswordBox3" Margin="5" Visibility="{Binding ElementName=TextBlock_ConfirmValue, Path=Visibility}"/>
+
+            <StackPanel Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="4" HorizontalAlignment="Right" Orientation="Horizontal">
+                <Button Content="Ok" Width="80" Margin="0,10,5,5" Command="{Binding OkCommand}" CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}, AncestorLevel=1}}"/>
+                <Button Content="Cancel" Width="80" Margin="0,10,5,5" Command="{Binding CancelCommand}" CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}, AncestorLevel=1}}"/>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Window>

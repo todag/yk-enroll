@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "YKEnroll.Win": {
+      "commandName": "Project",
+      "nativeDebugging": false
+    }
+  }
+}

@@ -1,0 +1,49 @@
+﻿<Window x:Class="YKEnroll.Win.Views.Windows.SelectUserView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:YKEnroll.Win.Views"        
+        xmlns:viewModels="clr-namespace:YKEnroll.Win.ViewModels"
+        d:DataContext="{d:DesignInstance viewModels:SelectUserViewModel}"
+        Style="{StaticResource StyledWindow}"
+        mc:Ignorable="d"
+        Title="Select user" Height="450" Width="420">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <!--
+        <TextBlock Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="0" Text="Select user" FontSize="16" FontWeight="Bold" Margin="0,-10,0,0"/>
+        <Separator Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="1" VerticalAlignment="Top"/>-->
+        
+        <StackPanel HorizontalAlignment="Left" Grid.Row="2" Orientation="Horizontal">
+            <Path Stretch="Uniform" Height="20" Width="25" Fill="{StaticResource AccentColorBrush}" Data="{StaticResource Icons.UserSearchOutline}"/>
+            <TextBox Width="120" Margin="10" x:Name="TextBox_SearchText" Text="{Binding SearchString}"/>
+            <Button Content="Search" Width="60" Margin="10" Command="{Binding SearchDirectoryCommand}"/>
+        </StackPanel>
+
+        <DataGrid Grid.Row="3" ScrollViewer.CanContentScroll="True" ItemsSource="{Binding SearchResults}" SelectedItem="{Binding SelectedUser, Mode=OneWayToSource}" AutoGenerateColumns="False" ScrollViewer.HorizontalScrollBarVisibility="Auto" IsReadOnly="True" ColumnWidth="*" HorizontalAlignment="Stretch" x:Name="DataGrid_Results" SelectionMode="Single" Margin="0,10,0,0">
+            <DataGrid.InputBindings>
+                <MouseBinding Gesture="LeftDoubleClick" Command="{Binding OkCommand}" CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}, AncestorLevel=1}}" />
+            </DataGrid.InputBindings>
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Name" Binding="{Binding Name}"/>
+                <DataGridTextColumn Header="User name" Binding="{Binding SamAccountName}"/>
+                <DataGridTextColumn Header="UPN" Binding="{Binding UserPrincipalName}"/>
+                <DataGridTextColumn Header="Mail" Binding="{Binding Mail}"/>
+                <DataGridTextColumn Header="Mobile" Binding="{Binding Mobile}"/>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <TextBlock Name="CountTextBlock" Grid.Column="0" Grid.ColumnSpan="4" Grid.Row="4" Margin="0,0,10,2" HorizontalAlignment="Right"/>
+        <StackPanel Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Right" Orientation="Horizontal" Grid.Row="6" Margin="0,10,0,0">
+            <Button Content="Ok" Width="80" Command="{Binding OkCommand}" CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}, AncestorLevel=1}}"/>
+            <Button Content="Cancel" Width="80" Margin="5,0,0,0" Command="{Binding CancelCommand}" CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}, AncestorLevel=1}}"/>
+        </StackPanel>
+    </Grid>
+</Window>
