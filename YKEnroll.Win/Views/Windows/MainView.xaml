@@ -68,7 +68,7 @@
                     </DataTemplate>
                 </DataGrid.RowHeaderTemplate>
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="YubiKey" Width="Auto" Binding="{Binding Name}"/>
+                    <DataGridTextColumn Header="Form factor" Width="Auto" Binding="{Binding FormFactor}"/>
                     <DataGridTextColumn Header="Serial" Width="Auto" Binding="{Binding SerialNumber}"/>
                     <DataGridTextColumn Header="Firmware" Width="Auto" Binding="{Binding FirmwareVersion}"/>
                     <DataGridTextColumn Header="USB Applications" Width="Auto" Binding="{Binding EnabledUsbCapabilities, Converter={StaticResource ListToStringConverter}}"/>
@@ -230,6 +230,7 @@
                 <Button Content="Request"    Command="{Binding RequestCommand}"   Margin="5"/>
                 <Button Content="Retrieve"   Command="{Binding RetrieveCommand}"  Margin="5"/>
                 <Button Content="Import"     Command="{Binding ImportCommand}"    Margin="5"/>
+                <Button Content="Attest"     Command="{Binding AttestCommand}"    Margin="5"/>
                 <Button Content="View"       Command="{Binding ShowCertificateCommand}" Margin="5">
                     <Button.Style>
                         <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">

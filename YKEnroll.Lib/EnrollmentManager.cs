@@ -36,7 +36,7 @@ public class EnrollmentManager : INotifyPropertyChanged
     
     /// <summary>
     ///     Load/Refresh the list of connected YubiKeys.
-    /// </summary>    
+    /// </summary>
     public void GetDevices()
     {        
         lock(Status)
@@ -78,8 +78,8 @@ public class EnrollmentManager : INotifyPropertyChanged
         lock (Status)
         {
             try
-            {                
-                Status.Started("Loading CA servers...");                
+            {
+                Status.Started("Loading CA servers...");
                 CAServers = ADManager.GetCAServers();
             }
             catch
@@ -91,8 +91,8 @@ public class EnrollmentManager : INotifyPropertyChanged
                 Status.Stopped();
             }
         }
-    }    
-        
+    }
+
     public event PropertyChangedEventHandler? PropertyChanged;
     private void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
     {

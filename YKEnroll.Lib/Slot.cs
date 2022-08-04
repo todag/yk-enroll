@@ -57,6 +57,8 @@ public class Slot : INotifyPropertyChanged
         return ("Unknown", 0);
     }
 
+    public AttestationStatement? AttestationStatement { get; set; }
+
     public SlotStatus SlotStatus
     {
         get => _slotStatus;

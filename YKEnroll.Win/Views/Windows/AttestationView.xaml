@@ -1,0 +1,200 @@
+﻿<Window x:Class="YKEnroll.Win.Views.Windows.AttestationView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:YKEnroll.Win.Views.Windows"
+        xmlns:viewModels="clr-namespace:YKEnroll.Win.ViewModels"
+        d:DataContext="{d:DesignInstance viewModels:ApplicationsViewModel}"
+        Style="{StaticResource StyledWindow}"
+        mc:Ignorable="d"
+        Title="Attestation result" Height="350" Width="400" SizeToContent="Height">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition MinWidth="360" Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+                
+        <GroupBox Grid.Column="1" Grid.Row="1" Margin="0,5,0,5">
+            <GroupBox.Header>
+                <StackPanel Orientation="Horizontal" Height="20">
+                    <Path Stretch="Uniform" Height="20" Width="20" Fill="{StaticResource ForegroundBrush.Light}" Data="{StaticResource Icons.CertificateOutline}"/>
+                    <TextBlock Text="Attestation result" Margin="4,0,0,0" FontSize="{DynamicResource FontSizeHeader1}" VerticalAlignment="Center" Foreground="{StaticResource ForegroundBrush.Light}"/>
+                </StackPanel>
+            </GroupBox.Header>
+            <Grid Margin="10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="10"/>
+                    <ColumnDefinition Width="260"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Column="0" Grid.Row="0" Text="Issuer"/>
+                <TextBlock Grid.Column="2" Grid.Row="0" Text="{Binding StatementCert.Issuer}"/>
+
+                <TextBlock Grid.Column="0" Grid.Row="1" Text="Subject"/>
+                <TextBlock Grid.Column="2" Grid.Row="1" Text="{Binding StatementCert.Subject}"/>
+
+                <TextBlock Grid.Column="0" Grid.Row="2" Text="Firmware version"/>
+                <TextBlock Grid.Column="2" Grid.Row="2" Text="{Binding AttestationStatement.FirmwareVersion}"/>
+
+                <TextBlock Grid.Column="0" Grid.Row="3" Text="Pin Policy"/>
+                <TextBlock Grid.Column="2" Grid.Row="3" Text="{Binding AttestationStatement.PinPolicy}"/>
+
+                <TextBlock Grid.Column="0" Grid.Row="4" Text="Touch Policy"/>
+                <TextBlock Grid.Column="2" Grid.Row="4" Text="{Binding AttestationStatement.TouchPolicy}"/>
+
+                
+                <TextBlock Grid.Column="0" Grid.Row="5" Text="Status"/>
+
+                <StackPanel Grid.Column="2" Grid.Row="5" Orientation="Horizontal">
+                    <Path Grid.Column="1" Grid.Row="5" Stretch="Uniform" Height="15" Width="15" Data="{StaticResource Icons.CheckOutline}">
+                        <Path.Style>
+                            <Style TargetType="Path">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding AttestationStatement.IsValid}" Value="True">
+                                        <Setter Property="Fill" Value="Green"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding AttestationStatement.IsValid}" Value="False">
+                                        <Setter Property="Fill" Value="Red"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Path.Style>
+                    </Path>
+                    <TextBlock Grid.Column="2" Grid.Row="5" Margin="5,0,0,0">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding AttestationStatement.IsValid}" Value="True">
+                                        <Setter Property="Text" Value="Attestation successful"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding AttestationStatement.IsValid}" Value="False">
+                                        <Setter Property="Text" Value="Attestation failed!"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+                </StackPanel>
+
+                <TextBlock Grid.Column="2" Grid.Row="6" TextWrapping="Wrap" Text="{Binding FailStatusMessage}" Foreground="Red" Visibility="{Binding IsValid, Converter={StaticResource InverseBoolToVisConverter}}"/>
+            </Grid>
+        </GroupBox>
+        
+        <Expander Grid.Column="1" Grid.Row="3" Header="Certificate chain" IsExpanded="False">
+            <StackPanel>
+                <GroupBox Grid.Column="1" Grid.Row="5" Margin="0,2,0,0" Background="SlateGray" Width="300" HorizontalAlignment="Left">
+                    <GroupBox.Header>
+                        <StackPanel Orientation="Horizontal" Height="20">
+                            <Button Background="Transparent" Height="20" Width="30" Margin="0" Padding="0" Command="{Binding ShowCertificateCommand}" CommandParameter="{Binding StatementCert}">
+                                <Path Stretch="Uniform" Height="20" Width="20" Fill="{StaticResource ForegroundBrush.Light}" Data="{StaticResource Icons.CertificateOutline}"/>
+                            </Button>
+                            <TextBlock Text="Statement certificate" Margin="4,0,0,0" FontSize="{DynamicResource FontSizeHeader1}" VerticalAlignment="Center" Foreground="{StaticResource ForegroundBrush.Light}"/>
+                        </StackPanel>
+                    </GroupBox.Header>
+                    <Border BorderThickness="1" BorderBrush="SlateGray">
+                    <Grid Margin="10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="10"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Column="0" Grid.Row="0" Text="Issuer"/>
+                        <TextBlock Grid.Column="2" Grid.Row="0" Text="{Binding StatementCert.Issuer}"/>
+
+                        <TextBlock Grid.Column="0" Grid.Row="1" Text="Subject"/>
+                        <TextBlock Grid.Column="2" Grid.Row="1" Text="{Binding StatementCert.Subject}"/>
+                    </Grid>
+                    </Border>
+                </GroupBox>
+                <StackPanel Orientation="Horizontal" Margin="0,2,0,0">
+                    <Path Stretch="Uniform" Height="20" VerticalAlignment="Top" Width="20" Fill="SlateGray" Data="{StaticResource Icons.ArrowUpLeftBold}"/>
+                    <GroupBox Grid.Column="1" Grid.Row="3" Background="SlateGray" Width="300">
+                        <GroupBox.Header>
+                            <StackPanel Orientation="Horizontal" Height="20">
+                                <Button Background="Transparent" Height="20" Width="30" Margin="0" Padding="0" Command="{Binding ShowCertificateCommand}" CommandParameter="{Binding AttestationCert}">
+                                    <Path Stretch="Uniform" Height="20" Width="20" Fill="{StaticResource ForegroundBrush.Light}" Data="{StaticResource Icons.CertificateOutline}"/>
+                                </Button>
+                                <TextBlock Text="Attestation certificate" Margin="4,0,0,0" FontSize="{DynamicResource FontSizeHeader1}" VerticalAlignment="Center" Foreground="{StaticResource ForegroundBrush.Light}"/>
+                            </StackPanel>
+                        </GroupBox.Header>
+                        <Border BorderThickness="1" BorderBrush="SlateGray">
+                            <Grid Margin="10">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="10"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <TextBlock Grid.Column="0" Grid.Row="0"  Text="Issuer"/>
+                                <TextBlock Grid.Column="2" Grid.Row="0"  Text="{Binding AttestationCert.Issuer}"/>
+
+                                <TextBlock Grid.Column="0" Grid.Row="1" Text="Subject"/>
+                                <TextBlock Grid.Column="2" Grid.Row="1" Text="{Binding AttestationCert.Subject}"/>
+                            </Grid>
+                        </Border>
+                    </GroupBox>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" Margin="20,2,0,0">
+                    <Path Stretch="Uniform" Height="20" VerticalAlignment="Top" Width="20" Fill="SlateGray" Data="{StaticResource Icons.ArrowUpLeftBold}"/>
+                    <GroupBox Background="SlateGray" Width="300">
+                        <GroupBox.Header>
+                            <StackPanel Orientation="Horizontal" Height="20">
+                                <Button Background="Transparent" Height="20" Width="30" Margin="0" Padding="0" Command="{Binding ShowCertificateCommand}" CommandParameter="{Binding RootCert}">
+                                    <Path Stretch="Uniform" Height="20" Width="20" Fill="{StaticResource ForegroundBrush.Light}" Data="{StaticResource Icons.CertificateOutline}"/>
+                                </Button>
+                                <TextBlock Text="Root certificate" Margin="4,0,0,0" FontSize="{DynamicResource FontSizeHeader1}" VerticalAlignment="Center" Foreground="{StaticResource ForegroundBrush.Light}"/>
+                            </StackPanel>
+                        </GroupBox.Header>
+                        <Border BorderThickness="1" BorderBrush="SlateGray">
+                            <Grid Margin="10">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="10"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <TextBlock Grid.Column="0" Grid.Row="0" Text="Issuer"/>
+                                <TextBlock Grid.Column="2" Grid.Row="0" Text="{Binding RootCert.Issuer}"/>
+
+                                <TextBlock Grid.Column="0" Grid.Row="1" Text="Subject"/>
+                                <TextBlock Grid.Column="2" Grid.Row="1" Text="{Binding RootCert.Subject}"/>
+                            </Grid>
+                        </Border>
+                    </GroupBox>
+                </StackPanel>
+            </StackPanel>
+        </Expander>
+
+        <Button Grid.Column="0" Grid.ColumnSpan="4" Grid.Row="4" HorizontalAlignment="Right" Width="80" Content="Close" Command="{Binding CloseCommand}" CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}, AncestorLevel=1}}"/>
+    </Grid>
+</Window>

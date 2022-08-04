@@ -2,6 +2,7 @@
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
+using System.Text;
 using Yubico.YubiKey;
 using Yubico.YubiKey.Piv;
 using Yubico.YubiKey.Piv.Commands;
@@ -140,6 +141,17 @@ public class YubiKey : INotifyPropertyChanged
         LoadCertificates(slot);
         if (resetChuid) ResetChuid();
     }
+        
+    public AttestationStatement Attest(Slot slot)
+    {
+        if (PivSession == null)
+            throw new NullReferenceException("The YubiKey PivSession must be initialized with the NewSession method!");
+        Session.Status.Started($"Generating attestation for slot {slot.Name}");        
+        var attestationCert = PivSession.GetAttestationCertificate();
+        var statementCert = PivSession.CreateAttestationStatement(slot.SlotNumber);
+        slot.AttestationStatement = new(statementCert, attestationCert);        
+        return slot.AttestationStatement;
+    }   
 
     public void LoadCertificates(Slot? slot = null)
     {
@@ -297,10 +309,25 @@ public class YubiKey : INotifyPropertyChanged
 
     public List<Slot> Slots { get; set; }
     public string FirmwareVersion => IYubiKeyDevice.FirmwareVersion.ToString();
-    public string SerialNumber => IYubiKeyDevice.SerialNumber.ToString() ?? string.Empty;
-    public string FormFactor => IYubiKeyDevice.FormFactor.ToString();
+    public string SerialNumber => IYubiKeyDevice.SerialNumber.ToString() ?? string.Empty;    
 
-    public string Name => IYubiKeyDevice.FormFactor.ToString();
+    public string FormFactor
+    {
+        get
+        {
+            return IYubiKeyDevice.FormFactor.ToString() switch
+            {
+                "UsbAKeychain"          => "USB A Keychain",
+                "UsbANaano"             => "USB A Nano",
+                "UsbCKeychain"          => "USB C Keychain",
+                "UsbCNano"              => "USB C Nano",
+                "UsbCLightning"         => "USB C Lightning",
+                "UsbABiometricKeychain" => "USB A Biometric Keychain",
+                "UsbCBiometricKeychain" => "USB C Biometric Keychain",
+                _ => IYubiKeyDevice.FormFactor.ToString(),
+            };
+        }
+    }
 
     public bool ConfigurationLocked => IYubiKeyDevice.ConfigurationLocked;
 

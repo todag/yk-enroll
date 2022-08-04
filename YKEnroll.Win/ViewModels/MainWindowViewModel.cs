@@ -34,6 +34,7 @@ internal class MainViewModel : Presenter
 
     public EnrollmentManager EnrollmentManager { get; } = new();
 
+    public ICommand AttestCommand => new Command(_ => Attest());
     public ICommand ExitCommand => new Command(_ => ExitApplication());
     public ICommand GetDevicesCommand => new Command(_ => GetDevices());
     public ICommand GetCAServersCommand => new Command(_ => GetCAServers());
@@ -154,9 +155,9 @@ internal class MainViewModel : Presenter
         var win = new RetrieveView { DataContext = new RetrieveViewModel(EnrollmentManager, SelectedDevice!, SelectedSlot!) };
         win.ShowDialog();
     }
-
+    
     private void About()
-    {
+    {        
         string winBuildInfo = "";
         string libBuildInfo = "";
         string copyright = "";
@@ -197,6 +198,30 @@ internal class MainViewModel : Presenter
         ShowMessage.Info(msg);        
     }
 
+    private async void Attest()
+    {
+        try
+        {
+            if(SelectedSlot!.AttestationStatement == null)
+            {
+                await Task.Run(() =>
+                {
+                    using (SelectedDevice!.NewSession(new KeyCollectorPrompt()))
+                    {
+                        SelectedDevice.Attest(SelectedSlot!);
+                    }
+                });                
+            }
+            var win = new AttestationView() { DataContext = new AttestationViewModel(SelectedSlot!.AttestationStatement!) };
+            win.ShowDialog();
+        }
+        catch(Exception ex)
+        {
+            ShowMessage.Error("Attestation failed!", ex);
+        }
+        
+    }
+
     private void Enroll()
     {
         var win = new EnrollView { DataContext = new EnrollViewModel(EnrollmentManager, SelectedDevice!, SelectedSlot!) };
@@ -206,7 +231,7 @@ internal class MainViewModel : Presenter
     private void Applications()
     {
         var win = new ApplicationsView { DataContext = new ApplicationsViewModel(EnrollmentManager, SelectedDevice!) };
-        win.ShowDialog();       
+        win.ShowDialog();
     }
 
     private void Request()
