@@ -230,7 +230,17 @@
                 <Button Content="Request"    Command="{Binding RequestCommand}"   Margin="5"/>
                 <Button Content="Retrieve"   Command="{Binding RetrieveCommand}"  Margin="5"/>
                 <Button Content="Import"     Command="{Binding ImportCommand}"    Margin="5"/>
-                <Button Content="Attest"     Command="{Binding AttestCommand}"    Margin="5"/>
+                <Button Content="Attest"     Command="{Binding AttestCommand}"    Margin="5">
+                    <Button.Style>
+                        <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding ElementName=DataGrid_Slots, Path=SelectedItem.Certificate}" Value="{x:Null}">
+                                    <Setter Property="IsEnabled" Value="False"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
                 <Button Content="View"       Command="{Binding ShowCertificateCommand}" Margin="5">
                     <Button.Style>
                         <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">

@@ -322,7 +322,7 @@ public class YubiKey : INotifyPropertyChanged
             return IYubiKeyDevice.FormFactor.ToString() switch
             {
                 "UsbAKeychain"          => "USB A Keychain",
-                "UsbANaano"             => "USB A Nano",
+                "UsbANano"              => "USB A Nano",
                 "UsbCKeychain"          => "USB C Keychain",
                 "UsbCNano"              => "USB C Nano",
                 "UsbCLightning"         => "USB C Lightning",
