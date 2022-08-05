@@ -44,6 +44,7 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 <TextBlock Grid.Column="0" Grid.Row="0" Text="Issuer"/>
                 <TextBlock Grid.Column="2" Grid.Row="0" Text="{Binding StatementCert.Issuer}"/>
@@ -51,19 +52,22 @@
                 <TextBlock Grid.Column="0" Grid.Row="1" Text="Subject"/>
                 <TextBlock Grid.Column="2" Grid.Row="1" Text="{Binding StatementCert.Subject}"/>
 
-                <TextBlock Grid.Column="0" Grid.Row="2" Text="Firmware version"/>
-                <TextBlock Grid.Column="2" Grid.Row="2" Text="{Binding AttestationStatement.FirmwareVersion}"/>
+                <TextBlock Grid.Column="0" Grid.Row="2" Text="Serial number"/>
+                <TextBlock Grid.Column="2" Grid.Row="2" Text="{Binding AttestationStatement.SerialNumber}"/>
+                
+                <TextBlock Grid.Column="0" Grid.Row="3" Text="Firmware version"/>
+                <TextBlock Grid.Column="2" Grid.Row="3" Text="{Binding AttestationStatement.FirmwareVersion}"/>
 
-                <TextBlock Grid.Column="0" Grid.Row="3" Text="Pin Policy"/>
-                <TextBlock Grid.Column="2" Grid.Row="3" Text="{Binding AttestationStatement.PinPolicy}"/>
+                <TextBlock Grid.Column="0" Grid.Row="4" Text="Pin Policy"/>
+                <TextBlock Grid.Column="2" Grid.Row="4" Text="{Binding AttestationStatement.PinPolicy}"/>
 
-                <TextBlock Grid.Column="0" Grid.Row="4" Text="Touch Policy"/>
-                <TextBlock Grid.Column="2" Grid.Row="4" Text="{Binding AttestationStatement.TouchPolicy}"/>
+                <TextBlock Grid.Column="0" Grid.Row="5" Text="Touch Policy"/>
+                <TextBlock Grid.Column="2" Grid.Row="5" Text="{Binding AttestationStatement.TouchPolicy}"/>
 
                 
-                <TextBlock Grid.Column="0" Grid.Row="5" Text="Status"/>
+                <TextBlock Grid.Column="0" Grid.Row="6" Text="Status"/>
 
-                <StackPanel Grid.Column="2" Grid.Row="5" Orientation="Horizontal">
+                <StackPanel Grid.Column="2" Grid.Row="6" Orientation="Horizontal">
                     <Path Grid.Column="1" Grid.Row="5" Stretch="Uniform" Height="15" Width="15" Data="{StaticResource Icons.CheckOutline}">
                         <Path.Style>
                             <Style TargetType="Path">
@@ -94,7 +98,7 @@
                     </TextBlock>
                 </StackPanel>
 
-                <TextBlock Grid.Column="2" Grid.Row="6" TextWrapping="Wrap" Text="{Binding FailStatusMessage}" Foreground="Red" Visibility="{Binding IsValid, Converter={StaticResource InverseBoolToVisConverter}}"/>
+                <TextBlock Grid.Column="2" Grid.Row="7" TextWrapping="Wrap" Text="{Binding FailStatusMessage}" Foreground="Red" Visibility="{Binding IsValid, Converter={StaticResource InverseBoolToVisConverter}}"/>
             </Grid>
         </GroupBox>
         

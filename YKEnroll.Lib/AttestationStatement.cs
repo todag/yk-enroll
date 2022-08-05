@@ -60,8 +60,14 @@ public class AttestationStatement
             else if (oid == "1.3.6.1.4.1.41482.3.7")
             {
                 // Serial number of the YubiKey, encoded as an integer.
-                // The value seems to be a 48bit value, convert:
-                int serialNumber = (int)value[0];
+                // The value seems to be a 48bit value (6 bytes), try to convert:
+                // Drop the first two values and reverse the array.
+                // This seems to work, at least with my Yubikeys, there
+                // is probably a better way though...
+                byte[] serialByte = new byte[4];
+                Array.Copy(value, 2, serialByte, 0, 4);
+                Array.Reverse(serialByte);
+                SerialNumber = BitConverter.ToInt32(serialByte, 0);
             }
             else if (oid == "1.3.6.1.4.1.41482.3.8")
             {
@@ -110,7 +116,7 @@ public class AttestationStatement
     public X509Chain Chain { get; private set; } = new();
     public bool IsValid { get; private set; } = false;
     public string FirmwareVersion { get; private set; } = "";
-    public string SerialNumber { get; private set; } = "";
+    public int SerialNumber { get; private set; }
     public string PinPolicy { get; private set; } = "";
     public string TouchPolicy { get; private set; } = "";
     public string Subject { get; private set; } = "";
