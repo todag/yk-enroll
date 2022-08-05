@@ -68,11 +68,14 @@ internal class ApplicationsViewModel : Presenter
         try
         {
             window.Visibility = Visibility.Hidden;
+
             // Set Usb capabilities
             List<string> setUsb = new();
             foreach (var chkBox in UsbApplications)
                 if (chkBox.IsChecked == true)
                     setUsb.Add(chkBox.Tag.ToString()!);
+            if (setUsb.Count == 0)
+                setUsb.Add("None");
             // Only set capabilities if the differ from what is currently set on the device
             if (!(availableUsb.Count() == 1 && availableUsb.Contains("None")) &&
                 !setUsb.OrderBy(e => e).SequenceEqual(currentUsb.OrderBy(e => e)))
@@ -87,6 +90,8 @@ internal class ApplicationsViewModel : Presenter
             foreach (var chkBox in NfcApplications)
                 if (chkBox.IsChecked == true)
                     setNfc.Add(chkBox.Tag.ToString()!);
+            if (setNfc.Count == 0)
+                setNfc.Add("None");
 
             // Only set capabilities if the differ from what is currently set on the device
             if (!(availableNfc.Count() == 1 && availableNfc.Contains("None")) &&

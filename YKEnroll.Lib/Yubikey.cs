@@ -17,7 +17,7 @@ namespace YKEnroll.Lib;
 /// </summary>
 public class YubiKey : INotifyPropertyChanged
 {
-    private readonly IYubiKeyDevice IYubiKeyDevice;
+    private IYubiKeyDevice IYubiKeyDevice;
     private Session? _session;
 
     private List<PivAlgorithm> _pivAlgorithms = new List<PivAlgorithm>()
@@ -238,6 +238,8 @@ public class YubiKey : INotifyPropertyChanged
             IYubiKeyDevice.SetEnabledUsbCapabilities(cap);
             Session.Status.Started($"Setting enabled Usb capabilities...Done. Sleeping set time ({Settings.CapabilitiesChangeSleepTime}) to allow device reboot and redetection...");
             Thread.Sleep(Settings.CapabilitiesChangeSleepTime * 1000);
+            // Reload this IYubikeyDevice after device reboot
+            this.IYubiKeyDevice = YubiKeyDevice.FindAll().Where(d => d.SerialNumber == this.SerialNumber).First();
         }
         finally
         {
@@ -259,6 +261,8 @@ public class YubiKey : INotifyPropertyChanged
             IYubiKeyDevice.SetEnabledNfcCapabilities(cap);
             Session.Status.Started($"Setting enabled Nfc capabilities...Done. Sleeping set time ({Settings.CapabilitiesChangeSleepTime}) to allow device reboot and redetection...");
             Thread.Sleep(Settings.CapabilitiesChangeSleepTime * 1000);
+            // Reload this IYubikeyDevice after device reboot
+            this.IYubiKeyDevice = YubiKeyDevice.FindAll().Where(d => d.SerialNumber == this.SerialNumber).First();
         }
         finally
         {
@@ -309,7 +313,7 @@ public class YubiKey : INotifyPropertyChanged
 
     public List<Slot> Slots { get; set; }
     public string FirmwareVersion => IYubiKeyDevice.FirmwareVersion.ToString();
-    public string SerialNumber => IYubiKeyDevice.SerialNumber.ToString() ?? string.Empty;    
+    public int? SerialNumber => IYubiKeyDevice.SerialNumber;    
 
     public string FormFactor
     {
