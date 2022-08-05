@@ -16,6 +16,7 @@ public static class Settings
         { "ExcludeTemplateOid", "1.3.6.1.5.5.7.3.1, 1.3.6.1.5.2.3.5" },
         { "IncludeTemplateName", "" },
         { "EnableSlot", "" },
+        { "HideIncompleteDevices", "True" },
         { "ResetChuidOnImport", "True" },
         { "CapabilitiesChangeSleepTime", "5" },
         { "LogFilePath", $"{Path.GetTempPath()}\\ykenroll.log.txt" }
@@ -24,6 +25,8 @@ public static class Settings
     private static readonly Dictionary<string, string> settings = new();
 
     public static bool ResetChuidOnImport => (bool)GetSetting(typeof(bool), "ResetChuidOnImport");
+
+    public static bool HideIncompleteDevices => (bool)GetSetting(typeof(bool), "HideIncompleteDevices");
 
     public static int CapabilitiesChangeSleepTime => (int)GetSetting(typeof(int), "CapabilitiesChangeSleepTime");
 

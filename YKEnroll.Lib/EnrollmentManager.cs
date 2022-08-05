@@ -54,7 +54,18 @@ public class EnrollmentManager : INotifyPropertyChanged
                         $" USB Capabilities: [{yubiKey.AvailableUsbCapabilities}]" +
                         $" NFC Capabilities [{yubiKey.AvailableNfcCapabilities}]" +
                         $"");
-                    yubiKeys.Add(new YubiKey(yubiKey));
+                    var x = yubiKey.SerialNumber;
+
+                    if (yubiKey.SerialNumber == null && Settings.HideIncompleteDevices)
+                    {
+                        Logger.Log("Skipped adding device because (Settings.HideIncompleteDevices = True) and no SerialNumber found on device.");
+                    }
+                    else
+                    {
+                        Logger.Log("Added device to device list.");
+                        yubiKeys.Add(new YubiKey(yubiKey));
+                    }
+
                 }
                 YubiKeys = yubiKeys;
             }
