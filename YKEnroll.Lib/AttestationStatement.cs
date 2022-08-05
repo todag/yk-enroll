@@ -42,6 +42,15 @@ public class AttestationStatement
         Chain.ChainPolicy.TrustMode = X509ChainTrustMode.CustomRootTrust;
         Chain.ChainPolicy.RevocationMode = X509RevocationMode.NoCheck;
         //chain.ChainPolicy.VerificationFlags = X509VerificationFlags.IgnoreWrongUsage | X509VerificationFlags.IgnoreInvalidBasicConstraints;
+
+        // Add X509VerificationFlags.IgnoreInvalidBasicConstraints flag because Yubikeys on firmware
+        // 5.2.4 (and maybe older) does not seem to include a Basic Constraints extension in the 
+        // attestation certificate so verification will fail without this flag set. On newer Yubikeys
+        // (tested on 5.2.6) the Basic Constraints extension is included in the attestation certificate.
+        // 
+        // We could do a firmware version check here but for now just set the flag for all verifications.        
+        Chain.ChainPolicy.VerificationFlags = X509VerificationFlags.IgnoreInvalidBasicConstraints;
+
         Chain.ChainPolicy.CustomTrustStore.Add(RootCertificate);
         Chain.ChainPolicy.ExtraStore.Add(AttestationCertificate);
         return Chain.Build(StatementCertificate);
