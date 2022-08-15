@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:YKEnroll.Win.Views"        
         xmlns:userControls="clr-namespace:YKEnroll.Win.Views.UserControls"
         xmlns:viewModels="clr-namespace:YKEnroll.Win.ViewModels"
-        d:DataContext="{d:DesignInstance viewModels:RequestViewModel}"        
+        d:DataContext="{d:DesignInstance viewModels:RequestViewModel}"
         Style="{StaticResource StyledWindow}"
         mc:Ignorable="d"
         Title="Request certificate" Width="420" Height="350" SizeToContent="Height">
@@ -28,16 +28,168 @@
             <RowDefinition Height="8"/>
         </Grid.RowDefinitions>
         <userControls:CASelection Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="4" Margin="0,5,0,5" />
-        
-        <TextBlock Grid.Column="1" Grid.Row="3" Text="CSR File" Name="txtSetMode"/>
-        <TextBox Grid.Column="3" Grid.Row="3" VerticalAlignment="Center" Text="{Binding CsrFile}" />
 
-        <Button Grid.Column="3" Grid.Row="4" Command="{Binding SelectFileCommand}" Width="40" HorizontalAlignment="Right" ToolTip="Select CSR file.">
-            <StackPanel Orientation="Horizontal">
-                <Path Stretch="Uniform" Height="16" Width="20" Fill="{Binding Path=Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}" Data="{StaticResource Icons.FolderOpen}"/>
-            </StackPanel>
-        </Button>
-        
+        <GroupBox Grid.Column="0" Grid.ColumnSpan="4" Grid.Row="3">
+            <GroupBox.Header>
+                <Grid>
+                    <StackPanel Orientation="Horizontal" Height="20">
+                        <Path Stretch="Uniform" Width="15" Fill="{StaticResource ForegroundBrush.Light}" Data="{StaticResource Icons.SettingsOutline}"/>
+                        <TextBlock Text="Certificate request (csr)" Margin="2,0,0,0" FontSize="{DynamicResource FontSizeHeader1}" Foreground="{StaticResource ForegroundBrush.Light}"/>
+                    </StackPanel>
+                    <Button Command="{Binding SelectFileCommand}" Width="40" HorizontalAlignment="Right" ToolTip="Select CSR file." Background="Transparent">
+                        <StackPanel Orientation="Horizontal">
+                            <Path Stretch="Uniform" Height="16" Width="20" Fill="{StaticResource ForegroundBrush.Light}" Data="{StaticResource Icons.FolderOpen}"/>
+                        </StackPanel>
+                    </Button>
+                </Grid>
+            </GroupBox.Header>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition SharedSizeGroup="A"/>
+                    <ColumnDefinition SharedSizeGroup="B"/>
+                    <ColumnDefinition SharedSizeGroup="C"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Column="1" Grid.Row="0" Text="CSR File" Name="txtSetMode"/>
+                <TextBox Grid.Column="3" Grid.Row="0" VerticalAlignment="Center" Text="{Binding CsrFile, Mode=OneWay}" IsReadOnly="True"/>
+
+                <TextBlock Grid.Column="1" Grid.Row="1" Text="Key algorithm"/>
+                <TextBox Grid.Column="3" Grid.Row="1" Text="{Binding Csr.PublicKey.SignatureAlgorithm, Mode=OneWay}" IsReadOnly="True"/>
+
+                <TextBlock Grid.Column="1" Grid.Row="2" Text="Key size"/>
+                <TextBox Grid.Column="3" Grid.Row="2" Text="{Binding Csr.PublicKey.KeySize, Mode=OneWay}" IsReadOnly="True"/>
+
+                <TextBlock Grid.Column="1" Grid.Row="3" Text="Subject"/>
+                <TextBox Grid.Column="3" Grid.Row="3" Text="{Binding Csr.Subject, Mode=OneWay}" IsReadOnly="True"/>
+
+                <TextBlock Grid.Column="1" Grid.Row="4" Text="Alternative names" VerticalAlignment="Top" Margin="0,4,0,0"/>
+                <TextBox Grid.Column="3" Grid.Row="4" Text="{Binding Csr.San, Mode=OneWay, Converter={StaticResource ListToMultiLineStringConverter}}" IsReadOnly="True" TextWrapping="Wrap"/>
+                
+                <TextBlock Grid.Column="1" Grid.Row="5" Text="Sid"/>
+                <TextBox Grid.Column="3" Grid.Row="5" Text="{Binding Csr.Sid, Mode=OneWay}" IsReadOnly="True"/>
+            </Grid>
+        </GroupBox>
+
+        <GroupBox Grid.Column="0" Grid.ColumnSpan="4" Grid.Row="4" Margin="0,5,0,5">
+            <GroupBox.Header>
+                <StackPanel Orientation="Horizontal" Height="20">
+                    <Path Stretch="Uniform" Height="20" Width="20" Fill="{StaticResource ForegroundBrush.Light}" Data="{StaticResource Icons.CertificateOutline}"/>
+                    <TextBlock Text="Attestation" Margin="4,0,0,0" FontSize="{DynamicResource FontSizeHeader1}" VerticalAlignment="Center" Foreground="{StaticResource ForegroundBrush.Light}"/>
+                </StackPanel>
+            </GroupBox.Header>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition SharedSizeGroup="A"/>
+                    <ColumnDefinition SharedSizeGroup="B"/>
+                    <ColumnDefinition SharedSizeGroup="C"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="6">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Text="Attestation status"/>
+                    <Path Grid.Column="1" HorizontalAlignment="Right" Stretch="Uniform" Height="15" Width="15" Margin="0,0,0,0">
+                        <Path.Style>
+                            <Style TargetType="Path">
+                                <Setter Property="Fill" Value="Red"/>
+                                <Setter Property="Data" Value="{StaticResource Icons.ErrorOutline}"/>
+                                <Style.Triggers>
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Binding="{Binding Csr.AttestationStatement.IsValid}" Value="True" />
+                                            <Condition Binding="{Binding Csr.MatchesAttestation}" Value="True" />
+                                        </MultiDataTrigger.Conditions>
+                                        <MultiDataTrigger.Setters>
+                                            <Setter Property="Fill" Value="Green"/>
+                                            <Setter Property="Data" Value="{StaticResource Icons.CheckOutline}"/>
+                                        </MultiDataTrigger.Setters>
+                                    </MultiDataTrigger>
+                                    <DataTrigger Binding="{Binding Csr.AttestationStatement}" Value="{x:Null}">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Path.Style>
+                    </Path>
+                </Grid>
+
+                <TextBox Grid.Column="3" Grid.Row="6" IsReadOnly="True">
+                    <TextBox.Style>
+                        <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
+                            <Style.Triggers>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding Csr.AttestationStatement.IsValid}" Value="True" />
+                                        <Condition Binding="{Binding Csr.MatchesAttestation}" Value="True" />
+                                    </MultiDataTrigger.Conditions>
+                                    <MultiDataTrigger.Setters>
+                                        <Setter Property="Text" Value="Valid and matches the CSR" />
+                                    </MultiDataTrigger.Setters>
+                                </MultiDataTrigger>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding Csr.AttestationStatement.IsValid}" Value="True" />
+                                        <Condition Binding="{Binding Csr.MatchesAttestation}" Value="False" />
+                                    </MultiDataTrigger.Conditions>
+                                    <MultiDataTrigger.Setters>
+                                        <Setter Property="Text" Value="Invalid! Does not match CSR!" />
+                                    </MultiDataTrigger.Setters>
+                                </MultiDataTrigger>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding Csr.AttestationStatement.IsValid}" Value="False" />
+                                        <Condition Binding="{Binding Csr.MatchesAttestation}" Value="True" />
+                                    </MultiDataTrigger.Conditions>
+                                    <MultiDataTrigger.Setters>
+                                        <Setter Property="Text" Value="Invalid!" />
+                                    </MultiDataTrigger.Setters>
+                                </MultiDataTrigger>
+                                <DataTrigger Binding="{Binding Csr.AttestationStatement}" Value="{x:Null}">
+                                    <Setter Property="Text" Value="N/A"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBox.Style>
+                </TextBox>
+
+
+                <TextBlock Grid.Column="1" Grid.Row="7" Text="Serial number" Visibility="{Binding Csr.AttestationStatement, Converter={StaticResource NullToVisibilityConverter}}"/>
+                <TextBox Grid.Column="3" Grid.Row="7" Text="{Binding Csr.AttestationStatement.SerialNumber, Mode=OneWay}" IsReadOnly="True" Visibility="{Binding Csr.AttestationStatement, Converter={StaticResource NullToVisibilityConverter}}"/>
+
+                <TextBlock Grid.Column="1" Grid.Row="8" Text="Pin Policy" Visibility="{Binding Csr.AttestationStatement, Converter={StaticResource NullToVisibilityConverter}}"/>
+                <TextBox Grid.Column="3" Grid.Row="8" Text="{Binding Csr.AttestationStatement.PinPolicy, Mode=OneWay}" IsReadOnly="True" Visibility="{Binding Csr.AttestationStatement, Converter={StaticResource NullToVisibilityConverter}}"/>
+
+                <TextBlock Grid.Column="1" Grid.Row="9" Text="Touch Policy" Visibility="{Binding Csr.AttestationStatement, Converter={StaticResource NullToVisibilityConverter}}"/>
+                <TextBox Grid.Column="3" Grid.Row="9" Text="{Binding Csr.AttestationStatement.TouchPolicy, Mode=OneWay}" IsReadOnly="True" Visibility="{Binding Csr.AttestationStatement, Converter={StaticResource NullToVisibilityConverter}}"/>
+            </Grid>
+        </GroupBox>
+
         <TextBlock Grid.Column="1" Grid.Row="5" Text="Output"/>
         <ComboBox Grid.Column="3" Grid.Row="5" x:Name="ComboBox_Output" SelectedValue="{Binding Path=Output, Mode=OneWayToSource}" SelectedValuePath="Tag" SelectedIndex="1">
             <ComboBoxItem Tag="save">

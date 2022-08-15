@@ -77,12 +77,20 @@
                         <Trigger Property="IsEnabled" Value="false">
                             <Setter Property="Opacity" TargetName="border" Value="0.56"/>
                         </Trigger>
-                        <Trigger Property="IsMouseOver" Value="true">
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsMouseOver" Value="true"/>
+                                <Condition Property="IsReadOnly" Value="false"/>
+                            </MultiTrigger.Conditions>
                             <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource Accent.LightBrush}"/>
-                        </Trigger>
-                        <Trigger Property="IsKeyboardFocused" Value="true">
+                        </MultiTrigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsKeyboardFocused" Value="true"/>
+                                <Condition Property="IsReadOnly" Value="false"/>
+                            </MultiTrigger.Conditions>
                             <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource Accent.DarkBrush}"/>
-                        </Trigger>
+                        </MultiTrigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>

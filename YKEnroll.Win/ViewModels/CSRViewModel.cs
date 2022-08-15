@@ -29,7 +29,8 @@ internal class CSRViewModel : Presenter
     
     public RequestSettings RequestSettings { get; } = new RequestSettings();
     public Slot Slot { get; set; }
-    
+
+    public bool IncludeAttestation { get; set; } = false;
     public string OutputFormat { get; set; } = "pem";
    
     private async void CreateCsr(Window window)
@@ -38,7 +39,7 @@ internal class CSRViewModel : Presenter
         {
             window.Visibility = Visibility.Hidden;
             var rs = RequestSettings;
-            var csr = await Task.Run(() =>
+            (byte[] csr, AttestationStatement attestationStatement) result = await Task.Run(() =>
             {
                 using (YubiKey.NewSession(new KeyCollectorPrompt()))
                 {
@@ -56,20 +57,34 @@ internal class CSRViewModel : Presenter
                         upn: rs.UserPrincipalName,
                         sid: rs.SecurityIdentifier
                         ); ;
-                    return csr;
+
+
+                    AttestationStatement? attestationStatement = null;
+                    if(IncludeAttestation)
+                    {
+                        attestationStatement = YubiKey.Attest(Slot);
+                    }                                        
+                    return (csr, attestationStatement);
                 }
             });
-
+            
             var saveFileDialog = new SaveFileDialog();
             saveFileDialog.Filter = "CSR file (*.csr)|*.csr";
             saveFileDialog.FileName = Slot.ShortName + ".csr";
             if (saveFileDialog.ShowDialog() == true)
             {
                 if (OutputFormat == "der")
-                    File.WriteAllBytes(saveFileDialog.FileName, csr);
+                    File.WriteAllBytes(saveFileDialog.FileName, result.csr);
                 else if (OutputFormat == "pem")
-                    File.WriteAllText(saveFileDialog.FileName,
-                        new string(PemOperations.BuildPem("CERTIFICATE REQUEST", csr)));
+                {
+                    File.WriteAllText(saveFileDialog.FileName, new string(PemOperations.BuildPem("CERTIFICATE REQUEST", result.csr)));
+                    if(result.attestationStatement != null)
+                    {
+                        File.AppendAllText(saveFileDialog.FileName, Environment.NewLine + new String(PemOperations.BuildPem("STATEMENT CERTIFICATE", result.attestationStatement.StatementCertificate.RawData)));
+                        File.AppendAllText(saveFileDialog.FileName, Environment.NewLine + new String(PemOperations.BuildPem("ATTESTATION CERTIFICATE", result.attestationStatement.AttestationCertificate.RawData)));
+                    }
+                }
+                    
                 ShowMessage.Info("CSR Generated successfully!");
             }
             window.Close();

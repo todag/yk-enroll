@@ -13,6 +13,8 @@
             <converters:InverseBoolToHiddenConverter x:Key="InverseBoolToHiddenConverter"/>
             <converters:BoolToHiddenConverter x:Key="BoolToHiddenConverter"/>
             <converters:ListToStringConverter x:Key="ListToStringConverter"/>
+            <converters:ListToMultiLineStringConverter x:Key="ListToMultiLineStringConverter"/>
+            <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
             <!--<SolidColorBrush x:Key="AccentColorBrush" Color="#007ACC" />-->
             
             <ResourceDictionary.MergedDictionaries>

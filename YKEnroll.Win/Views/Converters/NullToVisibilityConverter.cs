@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -10,19 +9,15 @@ using System.Windows.Data;
 
 namespace YKEnroll.Win.Views.Converters
 {
-    public sealed class ListToMultiLineStringConverter : IValueConverter
+    public sealed class NullToVisibilityConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if(typeof(IEnumerable<string>).IsAssignableFrom(value.GetType()))
-            {
-                return string.Join(Environment.NewLine, (IEnumerable<string>)value);
 
-            }
+            if (value is null)
+                return Visibility.Collapsed;
             else
-            {
-                throw new NotSupportedException();
-            }
+                return Visibility.Visible;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)

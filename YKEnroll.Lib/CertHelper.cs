@@ -78,7 +78,7 @@ public static class CertHelper
                 }
             }
             if (upnCount > 0)
-                return sanBuilder.Build();            
+                return sanBuilder.Build();
         }
         throw new ArgumentNullException("upn", "Unable to build User principal name(s) from the supplied data");
     }
@@ -127,7 +127,7 @@ public static class CertHelper
         string header = $"-----BEGIN {title.Trim().ToUpper()}-----{Environment.NewLine}";
         string data = Convert.ToBase64String(pemData, Base64FormattingOptions.InsertLineBreaks);
         string footer = $"{Environment.NewLine}-----END {title.Trim().ToUpper()}-----";
-        
+
         return header + data + footer;
     }
 
@@ -151,7 +151,7 @@ public static class CertHelper
             strippedPem.TrimEnd(Environment.NewLine.ToCharArray());
 
         return strippedPem;
-    }   
+    }
 
     /// <summary>
     ///     Converts a pem encoded file to der.
@@ -170,22 +170,20 @@ public static class CertHelper
         string firstLine = pemData.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).First();
         string lastLine = pemData.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).Last();
 
-        if(firstLine != lastLine)
+        if(firstLine.Replace("BEGIN", "") != lastLine.Replace("END", ""))
         {
             throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, "Inputdata headers don't match!"));
         }
 
-
         byte[] derData = new byte[] { };
-        string strippedPem = "";
+        string base64 = "";
         foreach (string l in pemData.Split(Environment.NewLine.ToCharArray(), StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries))
         {
             if(!l.StartsWith("-----"))
             {
-                strippedPem = strippedPem + l;
+                base64 = base64 + l;
             }
         }
-
-        return Convert.FromBase64CharArray(strippedPem.ToCharArray(), 0 , strippedPem.Length);
+        return Convert.FromBase64String(base64);
     }
 }

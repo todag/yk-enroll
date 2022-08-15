@@ -12,30 +12,67 @@ using System.Threading.Tasks;
 namespace YKEnroll.Win.ViewModels;
 
 internal class RequestViewModel : Presenter
-{                    
+{
+    
+    private string _csrFile = "";
+    private DecodedCsr? _csr;
+
     public RequestViewModel(EnrollmentManager enrollmentManager, YubiKey yubiKey, Slot slot)
     {
         EnrollmentManager = enrollmentManager;
         YubiKey = yubiKey;
-        Slot = slot;                
-    }            
+        Slot = slot;
+    }
 
     public ICommand OkCommand => new Command(_ => Request((Window)_!));
     public ICommand CancelCommand => new Command(_ => Cancel((Window)_!));
 
     public ICommand SelectFileCommand => new Command(_ => SelectFile());
+    
+    public DecodedCsr? Csr
+    {
+        get { return _csr; }
+        private set { Update(ref _csr, value); }
+    }
 
     public EnrollmentManager EnrollmentManager { get; private set; }
     public YubiKey YubiKey { get; set; }
-        
-    public Slot? Slot { get; set; }    
-    
-    public string CsrFile { get; set; }    
 
-    public string Output { get; set; }
-    
+    public Slot? Slot { get; set; }
+
+    public string CsrFile
+    {
+        get { return _csrFile; }
+        set 
+        {             
+            Update(ref _csrFile, value);
+            ReadCsr();
+        }
+    }
+   
+    public string Output { get; set; } = "";
+        
     public RequestSettings RequestSettings { get; } = new RequestSettings();
 
+    private void ReadCsr()
+    {
+        try
+        {
+            if (!string.IsNullOrWhiteSpace(CsrFile))
+            {
+                Csr = new DecodedCsr(File.ReadAllText(CsrFile));
+            }
+            else
+            {
+                Csr = null;
+            }
+        }
+        catch(Exception ex)
+        {
+            ShowMessage.Error("Failed to read csr!", ex);
+        }
+        
+    }
     private void Request(Window window)
     {        
         if(RequestSettings.CAServer == null || RequestSettings.CertificateTemplate == null)
@@ -118,7 +155,7 @@ internal class RequestViewModel : Presenter
     }
 
     private void Cancel(Window window)
-    {        
+    {
         window.Close();
     }
 }

@@ -10,13 +10,13 @@ using System.Windows.Data;
 
 namespace YKEnroll.Win.Views.Converters
 {
-    public sealed class ListToMultiLineStringConverter : IValueConverter
+    public sealed class ListToStringConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if(typeof(IEnumerable<string>).IsAssignableFrom(value.GetType()))
             {
-                return string.Join(Environment.NewLine, (IEnumerable<string>)value);
+                return string.Join(", ", (IEnumerable<string>)value);
 
             }
             else

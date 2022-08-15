@@ -9,7 +9,7 @@
         d:DataContext="{d:DesignInstance viewModels:CSRViewModel}"
         Style="{StaticResource StyledWindow}"
         mc:Ignorable="d"
-        Title="Create request" Width="420" Height="500" SizeToContent="Height">
+        Title="Create request" Width="420" Height="550" SizeToContent="Height">
     <Grid Margin="10" Grid.IsSharedSizeScope="True">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="25" SharedSizeGroup="A"/>
@@ -25,6 +25,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="8"/>
         </Grid.RowDefinitions>
 
@@ -33,15 +34,53 @@
         <userControls:SubjectInfo Grid.ColumnSpan="4" Grid.Row="3" Margin="0,5,0,0"/>
 
         <userControls:KeySettings Grid.ColumnSpan="4" Grid.Row="4" Margin="0,5,0,5"/>
-        
 
-        <TextBlock Grid.Column="1" Grid.Row="5" Text="Output format"/>
-        <ComboBox Grid.Column="3" Grid.Row="5" Name="ComboBox_OutputFormat" SelectedValue="{Binding OutputFormat}" SelectedValuePath="Tag">
-            <ComboBoxItem Content="DER (Binary)" Tag="der"/>
-            <ComboBoxItem Content="PEM (Base64)" Tag="pem"/>
-        </ComboBox>
-        
-        <StackPanel Grid.Column="1" Grid.ColumnSpan="3" Orientation="Horizontal" HorizontalAlignment="Right" Grid.Row="6" Margin="0,10,0,0">
+        <GroupBox Grid.Column="0" Grid.ColumnSpan="4" Grid.Row="5">
+            <GroupBox.Header>
+                <StackPanel Orientation="Horizontal" Height="20">
+                    <Path Stretch="Uniform" Width="15" Fill="{StaticResource ForegroundBrush.Light}" Data="{StaticResource Icons.SettingsOutline}"/>
+                    <TextBlock Text="Other settings" Margin="2,0,0,0" FontSize="{DynamicResource FontSizeHeader1}" Foreground="{StaticResource ForegroundBrush.Light}"/>
+                </StackPanel>
+            </GroupBox.Header>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition SharedSizeGroup="A"/>
+                    <ColumnDefinition SharedSizeGroup="B"/>
+                    <ColumnDefinition SharedSizeGroup="C"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Column="1" Grid.Row="0" Text="Include attestation"/>
+                <CheckBox Grid.Column="3" Grid.Row="0" x:Name="CheckBox_IncludeAttestation" IsChecked="{Binding IncludeAttestation}"/>
+                <TextBlock Grid.Column="1" Grid.Row="1" Text="Output format"/>
+                <ComboBox Grid.Column="3" Grid.Row="1" Name="ComboBox_OutputFormat" SelectedValue="{Binding OutputFormat}" SelectedValuePath="Tag">
+                    <ComboBox.Style>
+                        <Style TargetType="ComboBox" BasedOn="{StaticResource {x:Type ComboBox}}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding ElementName=CheckBox_IncludeAttestation, Path=IsChecked}" Value="True">
+                                    <Setter Property="SelectedIndex" Value="1"/>
+                                    <Setter Property="IsEnabled" Value="False"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding ElementName=CheckBox_IncludeAttestation, Path=IsChecked}" Value="False">
+                                    <Setter Property="SelectedIndex" Value="0"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ComboBox.Style>
+                    
+                    <ComboBoxItem Content="DER (Binary)" Tag="der"/>
+                    <ComboBoxItem Content="PEM (Base64)" Tag="pem"/>
+                </ComboBox>
+            </Grid>
+        </GroupBox>
+                
+        <StackPanel Grid.Column="1" Grid.ColumnSpan="3" Orientation="Horizontal" HorizontalAlignment="Right" Grid.Row="7" Margin="0,10,0,0">
             <Button Content="Ok" Width="80" Command="{Binding OkCommand}" CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}, AncestorLevel=1}}"/>
             <Button Content="Cancel" Width="80" Margin="5,0,0,0" Command="{Binding CancelCommand}" CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}, AncestorLevel=1}}"/>
         </StackPanel>

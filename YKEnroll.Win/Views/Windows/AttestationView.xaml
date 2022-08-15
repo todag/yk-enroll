@@ -98,7 +98,7 @@
                     </TextBlock>
                 </StackPanel>
 
-                <TextBlock Grid.Column="2" Grid.Row="7" TextWrapping="Wrap" Text="{Binding FailStatusMessage}" Foreground="Red" Visibility="{Binding IsValid, Converter={StaticResource InverseBoolToVisConverter}}"/>
+                <TextBlock Grid.Column="2" Grid.Row="7" TextWrapping="Wrap" Text="{Binding FailStatusMessage}" Foreground="Red" Visibility="{Binding AttestationStatement.IsValid, Converter={StaticResource InverseBoolToVisConverter}}"/>
             </Grid>
         </GroupBox>
         
