@@ -188,14 +188,19 @@ internal class MainViewModel : Presenter
         string winV = Assembly.GetExecutingAssembly().GetName().Version!.ToString();
         string libV = typeof(EnrollmentManager).Assembly.GetName().Version!.ToString();
         string msg = $"YK-Enroll\n" +
-            $"{copyright}\n" +            
+            $"{copyright}\n" +
             $"\n" +
-            $"\n" +            
+#if (CERTCLILib)
+            $"CERTCLILib support: Enabled\n" +
+#else
+            $"CERTCLILib support: Disabled\n" +
+#endif
+            $"\n" +
             $"YKEnroll.Win version {winV} buildinfo: {(string.IsNullOrWhiteSpace(winBuildInfo) ? "<no data>" : winBuildInfo)}\n" +
             $"YKEnroll.Lib version {libV} buildinfo: {(string.IsNullOrWhiteSpace(libBuildInfo) ? "<no data>" : libBuildInfo)}\n\n" +
             $"Attributions:\nIcons from https://icons8.com & https://materialdesignicons.com/";
         
-        ShowMessage.Info(msg);        
+        ShowMessage.Info(msg);
     }
 
     private async void Attest()

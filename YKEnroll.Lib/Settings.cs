@@ -19,14 +19,16 @@ public static class Settings
         { "HideIncompleteDevices", "True" },
         { "ResetChuidOnImport", "True" },
         { "CapabilitiesChangeSleepTime", "5" },
-        { "LogFilePath", $"{Path.GetTempPath()}\\ykenroll.log.txt" }
+        { "UseCertReq", "False" },
+        { "LogFilePath", $"{Path.GetTempPath()}ykenroll.log.txt" }
     };
    
     private static readonly Dictionary<string, string> settings = new();
 
+    public static bool UseCertReq => (bool)GetSetting(typeof(bool), "UseCertReq");
     public static bool ResetChuidOnImport => (bool)GetSetting(typeof(bool), "ResetChuidOnImport");
 
-    public static bool HideIncompleteDevices => (bool)GetSetting(typeof(bool), "HideIncompleteDevices");
+    public static bool HideIncompleteDevices => (bool)GetSetting(typeof(bool), "HideIncompleteDevices");    
 
     public static int CapabilitiesChangeSleepTime => (int)GetSetting(typeof(int), "CapabilitiesChangeSleepTime");
 

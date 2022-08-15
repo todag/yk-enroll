@@ -137,7 +137,7 @@ public class YubiKey : INotifyPropertyChanged
         if (PivSession == null)
             throw new NullReferenceException("The YubiKey PivSession must be initialized with the NewSession method!");
         Session.Status.Started("Importing certificate...");
-        PivSession.ImportCertificate(slot.SlotNumber, certificate);        
+        PivSession.ImportCertificate(slot.SlotNumber, certificate);
         LoadCertificates(slot);
         if (resetChuid) ResetChuid();
     }
