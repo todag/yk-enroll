@@ -12,7 +12,7 @@
     <GroupBox Margin="10">
         <GroupBox.Header>
             <StackPanel Orientation="Horizontal" Height="20">
-                <Path Stretch="Uniform" Height="14" Width="20" Fill="{StaticResource ForegroundBrush.Light}" Data="{StaticResource Icons.CAServer}"/>
+                <Path Stretch="Uniform" Height="14" Width="20" Fill="{StaticResource ForegroundBrush.Light}" Data="{StaticResource Icons.CertServer}"/>
                 <TextBlock Text="Certificate authority" FontSize="{DynamicResource FontSizeHeader1}" Margin="2,0,0,0" Foreground="{StaticResource ForegroundBrush.Light}"/>
             </StackPanel>
         </GroupBox.Header>
@@ -35,7 +35,7 @@
             </Grid.RowDefinitions>
             
             <TextBlock Grid.Column="1" Grid.Row="0" Text="CA"/>
-            <ComboBox Grid.Column="3" Grid.Row="0" Name="ComboBox_CAServers" ItemsSource="{Binding EnrollmentManager.CAServers}" SelectedItem="{Binding SelectedCAServer, Mode=OneWayToSource}" SelectedIndex="0" DisplayMemberPath="DisplayName"/>
+            <ComboBox Grid.Column="3" Grid.Row="0" Name="ComboBox_CertServers" ItemsSource="{Binding EnrollmentManager.CertServers}" SelectedItem="{Binding SelectedCertServer, Mode=OneWayToSource}" SelectedIndex="0" DisplayMemberPath="DisplayName"/>
 
             <TextBlock Grid.Column="1" Grid.Row="1" Text="Request number"/>
             <TextBox Grid.Column="3" Grid.Row="1" Text="{Binding RequestId}" />

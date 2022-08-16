@@ -96,9 +96,9 @@ public static class ADManager
     ///     container and returns the result as a list of CA Servers.    
     /// </summary>
     /// <returns></returns>
-    public static List<CAServer> GetCAServers()
+    public static List<ICertServer> GetCertServers()
     {
-        List<CAServer> caServers = new();
+        List<ICertServer> certServers = new();
         using (var directoryEntry = new DirectoryEntry(@"GC://rootDSE"))
         {                        
             var strRootName = directoryEntry.Properties["configurationNamingContext"].Value!.ToString();
@@ -109,21 +109,21 @@ public static class ADManager
             {
                 foreach (DirectoryEntry result in entry.Children)
                 {
-                    CAServer caServer = new();
+                    MSCACertServer certServer = new();
                     if (result.Properties["displayName"].Count > 0)
-                        caServer.DisplayName = result.Properties["displayName"][0]!.ToString() ?? string.Empty;
+                        certServer.DisplayName = result.Properties["displayName"][0]!.ToString() ?? string.Empty;
                     if (result.Properties["dNSHostName"].Count > 0)
-                        caServer.DnsHostName = result.Properties["dNSHostName"][0]!.ToString() ?? string.Empty;
+                        certServer.DnsHostName = result.Properties["dNSHostName"][0]!.ToString() ?? string.Empty;
                     if (result.Properties["cn"].Count > 0)
-                        caServer.CommonName = result.Properties["cn"][0]!.ToString() ?? string.Empty;
+                        certServer.CommonName = result.Properties["cn"][0]!.ToString() ?? string.Empty;
                     
-                    Logger.Log($"Found CA server: \n\"displayName:{caServer.DisplayName}\" \n\"dns:{caServer.DnsHostName}\" \n\"cn:{caServer.CommonName}\" ");                    
-                    caServer.CertificateTemplates = GetCertTemplates();
-                    caServers.Add(caServer);
+                    Logger.Log($"Found CA server: \n\"displayName:{certServer.DisplayName}\" \n\"dns:{certServer.DnsHostName}\" \n\"cn:{certServer.CommonName}\" ");                    
+                    certServer.CertificateTemplates = GetCertTemplates();
+                    certServers.Add(certServer);
                 }
             }
         }
-        return caServers;
+        return certServers;
     }
        
     /// <summary>

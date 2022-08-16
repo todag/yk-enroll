@@ -50,7 +50,7 @@ internal class EnrollViewModel : Presenter
         try
         {
             var rs = RequestSettings;
-            CAResponse caResponse = await Task.Run(() =>
+            CertServerResponse certServerResponse = await Task.Run(() =>
             {
                 using (YubiKey.NewSession(new KeyCollectorPrompt()))
                 {                    
@@ -70,26 +70,26 @@ internal class EnrollViewModel : Presenter
                             sid: rs.IncludeSecurityIdentifier ? rs.SecurityIdentifier : string.Empty
                         );                        
                     var pemCsrData = new string(PemOperations.BuildPem("CERTIFICATE REQUEST", derCsrData));
-                    caResponse = rs.CAServer!.RequestCertificate(rs.CertificateTemplate!, pemCsrData);
-                    if (caResponse.ResponseString == "CR_DISP_ISSUED")
-                        YubiKey.ImportCertificate(Slot, caResponse.Certificate!);
-                    return caResponse;
+                    certServerResponse = rs.CertServer!.RequestCertificate(rs.CertificateTemplate!, pemCsrData);
+                    if (certServerResponse.Status == RequestStatus.CR_ISSUED)
+                        YubiKey.ImportCertificate(Slot, certServerResponse.Certificate!);
+                    return certServerResponse;
                 }
             });
-            switch (caResponse.ResponseString)
+            switch (certServerResponse.Status)
             {
-                case "CR_DISP_ISSUED":
+                case RequestStatus.CR_ISSUED:
                     ShowMessage.Info("Enrollment successful!");
                     break;
-                case "CR_DISP_UNDER_SUBMISSION":
+                case RequestStatus.CR_PENDING:
                     ShowMessage.Info(
-                        $"Certificate request Id [{caResponse.RequestId.ToString()}] is pending approval by CA manager.\n\nWhen the certificate has been issued, you can use the \"Retrieve\" button to finish enrollment.");
+                        $"Certificate request Id [{certServerResponse.RequestId}] is pending approval by CA manager.\n\nWhen the certificate has been issued, you can use the \"Retrieve\" button to finish enrollment.");
                     break;
-                case "CR_DISP_DENIED":
+                case RequestStatus.CR_DENIED:
                     ShowMessage.Warning("The request was denied");
                     break;
                 default:
-                    ShowMessage.Error($"Unknown response from CA {caResponse.ResponseString}");
+                    ShowMessage.Error($"Unknown response from Cert Server");
                     break;
             }
             window.Close();

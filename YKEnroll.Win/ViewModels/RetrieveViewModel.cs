@@ -23,7 +23,7 @@ internal class RetrieveViewModel : Presenter
         Slot = slot;
     }
 
-    public CAServer? SelectedCAServer { get; set; }
+    public ICertServer? SelectedCertServer { get; set; }
 
     public ICommand OkCommand => new Command(_ => Retrieve((Window)_!));
     public ICommand CancelCommand => new Command(_ => Cancel((Window)_!));
@@ -52,7 +52,7 @@ internal class RetrieveViewModel : Presenter
             return;
         }
 
-        if(SelectedCAServer == null)
+        if(SelectedCertServer == null)
         {
             ShowMessage.Info("You must select a CA Server");
             return;
@@ -61,13 +61,13 @@ internal class RetrieveViewModel : Presenter
         try
         {
             window.Visibility = Visibility.Hidden;
-            var caResponse = await Task.Run(() => SelectedCAServer.RetrieveCertificate(Convert.ToInt32(RequestId)));
-            if (caResponse.ResponseString == "CR_DISP_ISSUED")
+            var certServerResponse = await Task.Run(() => SelectedCertServer.RetrieveCertificate(RequestId));
+            if (certServerResponse.Status == RequestStatus.CR_ISSUED)
             {
                 // Certifiate issued
                 if (Output == "save")
                 {
-                    SaveCertificate(caResponse.Certificate!);
+                    SaveCertificate(certServerResponse.Certificate!);
                 }
                 else if (Output == "import")
                 {
@@ -82,12 +82,12 @@ internal class RetrieveViewModel : Presenter
                         {
                             using (YubiKey.NewSession(new KeyCollectorPrompt()))
                             {
-                                YubiKey.ImportCertificate(Slot, caResponse.Certificate!);
+                                YubiKey.ImportCertificate(Slot, certServerResponse.Certificate!);
                             }
                         });
                 }
             }
-            else if (caResponse.ResponseString == "CR_DISP_UNDER_SUBMISSION")
+            else if (certServerResponse.Status == RequestStatus.CR_PENDING)
             {
                 ShowMessage.Info(
                     "Certificate issuance is pending approval by CA manager.\n\nWhen the certificate has been issued, you can use the \"Retrieve\" button to finish enrollment.",
@@ -96,7 +96,7 @@ internal class RetrieveViewModel : Presenter
             else
             {
                 ShowMessage.Info(
-                    $"Unhandled response from CA Server\nResponse: {caResponse.ResponseCode.ToString()}\nResponse code:{caResponse.ResponseString}",
+                    $"Unhandled response from Cert Server\nResponse: {certServerResponse.Status.ToString()}\nResponse code:{certServerResponse.StatusMessage}",
                     "CA Response");
             }
             window.Close();

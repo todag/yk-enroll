@@ -75,7 +75,7 @@ internal class RequestViewModel : Presenter
     }
     private void Request(Window window)
     {        
-        if(RequestSettings.CAServer == null || RequestSettings.CertificateTemplate == null)
+        if(RequestSettings.CertServer == null || RequestSettings.CertificateTemplate == null)
         {
             ShowMessage.Info("You must select a CA Server and a Template!");
             return;
@@ -84,31 +84,31 @@ internal class RequestViewModel : Presenter
         {
             window.Visibility = Visibility.Hidden;
             var rs = RequestSettings;
-            var caResponse = rs.CAServer.RequestCertificate(certTemplate: rs.CertificateTemplate, csrData: File.ReadAllText(CsrFile));
+            var certServerResponse = rs.CertServer.RequestCertificate(rs.CertificateTemplate, File.ReadAllText(CsrFile));
             
-            switch(caResponse.ResponseString)
+            switch(certServerResponse.Status)
             {
-                case "CR_DISP_ISSUED":
+                case RequestStatus.CR_ISSUED:
                     if (Output == "save")
-                        SaveCertificate(caResponse.Certificate!);
+                        SaveCertificate(certServerResponse.Certificate!);
                     if (Output == "import")
-                        ImportCertificate(caResponse.Certificate!);
+                        ImportCertificate(certServerResponse.Certificate!);
                     break;
-                case "CR_DISP_UNDER_SUBMISSION":
+                case RequestStatus.CR_PENDING:
                     ShowMessage.Info(
-                        $" Certificate request Id [{caResponse.RequestId.ToString()}] is pending approval by CA manager.\n" +
+                        $" Certificate request Id [{certServerResponse.RequestId}] is pending approval by CA manager.\n" +
                         $"When the certificate has been issued, you can use the \"Retrieve\" button to finish enrollment.",
                         "Issuance pending");
                     break;
-                case "CR_DISP_DENIED":
+                case RequestStatus.CR_DENIED:
                     ShowMessage.Error(
-                    $" Unhandled response from CA Server\nResponse: {caResponse.ResponseCode.ToString()}\nResponse code:" +
-                    $"{caResponse.ResponseString}", "CA Response");
+                    $" Request denied!" +
+                    $"{certServerResponse.StatusMessage}", "Cert Server Response");
                     break;
                 default:
                     ShowMessage.Error(
-                    $" Unhandled response from CA Server\nResponse: {caResponse.ResponseCode.ToString()}\nResponse code:" +
-                    $"{caResponse.ResponseString}", "CA Response");
+                    $" Unhandled response from Cert Server\nResponse: {certServerResponse.Status.ToString()}\nResponse code:" +
+                    $"{certServerResponse.StatusMessage}", "Cert Server Response");
                     break;
             }            
             window.Close();

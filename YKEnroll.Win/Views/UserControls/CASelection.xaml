@@ -9,7 +9,7 @@
     <GroupBox>
         <GroupBox.Header>
             <StackPanel Orientation="Horizontal" Height="20">
-                <Path Stretch="Uniform" Height="14" Width="20" Fill="{StaticResource ForegroundBrush.Light}" Data="{StaticResource Icons.CAServer}"/>
+                <Path Stretch="Uniform" Height="14" Width="20" Fill="{StaticResource ForegroundBrush.Light}" Data="{StaticResource Icons.CertServer}"/>
                 <TextBlock Text="Certificate authority" FontSize="{DynamicResource FontSizeHeader1}" Margin="2,0,0,0" Foreground="{StaticResource ForegroundBrush.Light}"/>
             </StackPanel>
         </GroupBox.Header>
@@ -28,10 +28,10 @@
             </Grid.RowDefinitions>
             
             <TextBlock Grid.Column="1" Grid.Row="1" Text="CA"/>
-            <ComboBox Grid.Column="3" Grid.Row="1" Name="ComboBox_CAServers" SelectedIndex="0" ItemsSource="{Binding EnrollmentManager.CAServers}" SelectedItem="{Binding RequestSettings.CAServer, Mode=OneWayToSource}" DisplayMemberPath="DisplayName"/>
+            <ComboBox Grid.Column="3" Grid.Row="1" Name="ComboBox_CertServers" SelectedIndex="0" ItemsSource="{Binding EnrollmentManager.CertServers}" SelectedItem="{Binding RequestSettings.CertServer, Mode=OneWayToSource}" DisplayMemberPath="DisplayName"/>
 
             <TextBlock Grid.Column="1" Grid.Row="2" Text="Certificate Template"/>
-            <ComboBox Grid.Column="3" Grid.Row="2" Name="ComboBox_CertificateTemplates" SelectedIndex="0" ItemsSource="{Binding ElementName=ComboBox_CAServers, Path=SelectedItem.CertificateTemplates}" SelectedItem="{Binding RequestSettings.CertificateTemplate, Mode=OneWayToSource}" DisplayMemberPath="DisplayName"/>
+            <ComboBox Grid.Column="3" Grid.Row="2" Name="ComboBox_CertificateTemplates" SelectedIndex="0" ItemsSource="{Binding ElementName=ComboBox_CertServers, Path=SelectedItem.CertificateTemplates}" SelectedItem="{Binding RequestSettings.CertificateTemplate, Mode=OneWayToSource}" DisplayMemberPath="DisplayName"/>
 
             <TextBlock Grid.Column="1" Grid.Row="3" Text="Required signatures"/>
             <TextBlock Grid.Column="3" Grid.Row="3" Text="{Binding ElementName=ComboBox_CertificateTemplates, Path=SelectedItem.RequiredSignatures}"/>

@@ -29,7 +29,7 @@
                 </MenuItem>
                 <MenuItem Header="_Tools" Foreground="{StaticResource ForegroundBrush.Light}">
                     <MenuItem Header="Reload devices" Command="{Binding GetDevicesCommand}" Foreground="{StaticResource {x:Static SystemColors.MenuTextBrushKey}}"/>
-                    <MenuItem Header="Reload CA servers" Command="{Binding GetCAServersCommand}" Foreground="{StaticResource {x:Static SystemColors.MenuTextBrushKey}}"/>
+                    <MenuItem Header="Reload CA servers" Command="{Binding GetCertServersCommand}" Foreground="{StaticResource {x:Static SystemColors.MenuTextBrushKey}}"/>
                     <MenuItem Header="Show log" Command="{Binding ShowLogCommand}" Foreground="{StaticResource {x:Static SystemColors.MenuTextBrushKey}}"/>
                 </MenuItem>
                 <MenuItem Header="_Help" Foreground="{StaticResource ForegroundBrush.Light}">

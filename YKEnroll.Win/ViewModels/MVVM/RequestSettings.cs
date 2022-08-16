@@ -18,7 +18,7 @@ public class RequestSettings : INotifyPropertyChanged
     private bool _includeUserPrincipalName = false;
     private bool _includeSecurityIdentifier = false;
 
-    private CAServer? _caServer;
+    private ICertServer? _certServer;
     private CertificateTemplate? _certificateTemplate;
 
     private PivAlgorithm _pivAlgorithm = Settings.DefaultPivAlgorithm;
@@ -41,10 +41,10 @@ public class RequestSettings : INotifyPropertyChanged
         set { _includeSecurityIdentifier = value; NotifyPropertyChanged(); }
     }
     
-    public CAServer? CAServer
+    public ICertServer? CertServer
     {
-        get { return _caServer; }
-        set { _caServer = value; NotifyPropertyChanged(); }
+        get { return _certServer; }
+        set { _certServer = value; NotifyPropertyChanged(); }
     }
 
     public CertificateTemplate? CertificateTemplate

@@ -1,4 +1,5 @@
-﻿using System.Security.Cryptography.X509Certificates;
+﻿/*
+using System.Security.Cryptography.X509Certificates;
 
 namespace YKEnroll.Lib;
 
@@ -61,3 +62,5 @@ public class CAResponse
     /// </summary>
     public X509Certificate2? Certificate { get; set; }
 }
+
+*/

@@ -12,7 +12,7 @@ namespace YKEnroll.Lib;
 
 public class EnrollmentManager : INotifyPropertyChanged
 {
-    private List<CAServer> _caServers = new();
+    private List<ICertServer> _certServers = new();
     private List<YubiKey> _yubiKeys = new();
     public Status Status { get; set; } = new();
     
@@ -28,10 +28,10 @@ public class EnrollmentManager : INotifyPropertyChanged
     /// <summary>
     ///     Holds a list of all available CA servers.
     /// </summary>
-    public List<CAServer> CAServers
+    public List<ICertServer> CertServers
     {
-        get { return _caServers; }
-        private set { _caServers = value; NotifyPropertyChanged(); }
+        get { return _certServers; }
+        private set { _certServers = value; NotifyPropertyChanged(); }
     }    
     
     /// <summary>
@@ -84,14 +84,14 @@ public class EnrollmentManager : INotifyPropertyChanged
     /// <summary>
     ///     Load/Refresh the list of available CA servers.
     /// </summary>
-    public void GetCAServers()
+    public void GetCertServers()
     {
         lock (Status)
         {
             try
             {
                 Status.Started("Loading CA servers...");
-                CAServers = ADManager.GetCAServers();
+                CertServers = ADManager.GetCertServers();
             }
             catch
             {

@@ -29,7 +29,7 @@ internal class MainViewModel : Presenter
         }
         
         GetDevices();
-        GetCAServers();
+        GetCertServers();
     }
 
     public EnrollmentManager EnrollmentManager { get; } = new();
@@ -37,7 +37,7 @@ internal class MainViewModel : Presenter
     public ICommand AttestCommand => new Command(_ => Attest());
     public ICommand ExitCommand => new Command(_ => ExitApplication());
     public ICommand GetDevicesCommand => new Command(_ => GetDevices());
-    public ICommand GetCAServersCommand => new Command(_ => GetCAServers());
+    public ICommand GetCertServersCommand => new Command(_ => GetCertServers());
     public ICommand ChangeCodesCommand => new Command(_ => ChangeCodes());
     public ICommand ShowCertificateCommand => new Command(_ => ShowCertificate());
     public ICommand ShowLogCommand => new Command(_ => ShowLog());
@@ -78,11 +78,11 @@ internal class MainViewModel : Presenter
         }
     }
 
-    private async void GetCAServers()
+    private async void GetCertServers()
     {
         try
         {
-            await Task.Run(() => EnrollmentManager.GetCAServers());
+            await Task.Run(() => EnrollmentManager.GetCertServers());
         }
         catch (Exception ex)
         {

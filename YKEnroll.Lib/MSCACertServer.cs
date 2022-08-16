@@ -1,4 +1,5 @@
-﻿using System;
+﻿#define CERTCLILib
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Security.Cryptography.X509Certificates;
@@ -10,7 +11,7 @@ using CERTCLILib;
 
 namespace YKEnroll.Lib;
 
-public class CAServer
+public class MSCACertServer : ICertServer
 {
     /*
      * CERTCLILib constants
@@ -51,9 +52,9 @@ public class CAServer
     /// </summary>
     /// <param name="certTemplate">Certificate Templatr to target in the request.</param>
     /// <param name="csrData">Base64 encoded CSR</param>
-    /// <returns>CAResponse object.</returns>
+    /// <returns>CertServerResponse object.</returns>
     /// <exception cref="NotSupportedException"></exception>
-    public CAResponse RequestCertificate(CertificateTemplate certTemplate, string csrData)
+    public CertServerResponse RequestCertificate(CertificateTemplate certTemplate, string csrData)
     {
 #if (CERTCLILib)
         if(!Settings.UseCertReq)
@@ -69,8 +70,8 @@ public class CAServer
     ///     Retrieves an issued certificate from this CA.
     /// </summary>
     /// <param name="requestId">Id of the request to retrieve.</param>
-    /// <returns>CAResponse object.</returns>
-    public CAResponse RetrieveCertificate(int requestId)
+    /// <returns>CertServerResponse object.</returns>
+    public CertServerResponse RetrieveCertificate(string requestId)
     {
 #if (CERTCLILib)
         if(!Settings.UseCertReq)
@@ -83,55 +84,65 @@ public class CAServer
     }
 
 #if (CERTCLILib)
-    private CAResponse RequestWithCERTCLILib(CertificateTemplate certTemplate, string csrData)
+    private CertServerResponse RequestWithCERTCLILib(CertificateTemplate certTemplate, string csrData)
     {
-        var caResponse = new CAResponse();
-
         var attr = "CertificateTemplate:" + certTemplate.Name;
-
         var certRequest = new CCertRequest();
-        caResponse.ResponseCode = certRequest.Submit(CR_IN_FORMATANY, csrData, attr, Config);
+        int responseCode = certRequest.Submit(CR_IN_FORMATANY, csrData, attr, Config);
 
-        switch (caResponse.ResponseString)
+        switch (responseCode)
         {
-            case "CR_DISP_ISSUED":
-                caResponse.Certificate =
-                    new X509Certificate2(Encoding.UTF8.GetBytes(certRequest.GetCertificate(CR_OUT_BASE64)));
-                break;
-            case "CR_DISP_UNDER_SUBMISSION":
-                caResponse.RequestId = certRequest.GetRequestId();
-                caResponse.RequestIdString = certRequest.GetRequestIdString();
-                break;
-            case "CR_DISP_DENIED":
-                break;
+            case CR_DISP_ISSUED:
+                return new CertServerResponse(
+                    RequestStatus.CR_ISSUED,
+                    certRequest.GetRequestIdString(),
+                    new X509Certificate2(Encoding.UTF8.GetBytes(certRequest.GetCertificate(CR_OUT_BASE64)))
+                    );
+            case CR_DISP_UNDER_SUBMISSION:
+                return new CertServerResponse(
+                    RequestStatus.CR_PENDING,
+                    certRequest.GetRequestIdString()
+                    );
+            case CR_DISP_DENIED:
+                return new CertServerResponse(
+                    RequestStatus.CR_DENIED,
+                    certRequest.GetRequestIdString()
+                    );
             default:
-                throw new NotSupportedException($"Unknown or unsupported answer from CA [{caResponse.ResponseString}]");
+                throw new NotSupportedException($"Unknown or unsupported answer from Cert Server [{responseCode}]");
         }
-
-        return caResponse;
     }
 
-    private CAResponse RetrieveWithCERTCLILib(int requestId)
+    private CertServerResponse RetrieveWithCERTCLILib(string requestId)
     {
-        var caResponse = new CAResponse();
         var certRequest = new CCertRequest();
-        caResponse.ResponseCode = certRequest.RetrievePending(requestId, Config);
-        switch (caResponse.ResponseString)
+        int responseCode = certRequest.RetrievePending(Int32.Parse(requestId), Config);
+
+        switch (responseCode)
         {
-            case "CR_DISP_ISSUED":
-                caResponse.Certificate =
-                    new X509Certificate2(Encoding.UTF8.GetBytes(certRequest.GetCertificate(CR_OUT_BASE64)));
-                break;
-            case "CR_DISP_UNDER_SUBMISSION":
-                caResponse.RequestId = certRequest.GetRequestId();
-                caResponse.RequestIdString = certRequest.GetRequestIdString();
-                break;
+            case CR_DISP_ISSUED:
+                X509Certificate2 certificate = new X509Certificate2(Encoding.UTF8.GetBytes(certRequest.GetCertificate(CR_OUT_BASE64)));
+                return new CertServerResponse(
+                    RequestStatus.CR_ISSUED,
+                    requestId, certificate
+                    );
+            case CR_DISP_UNDER_SUBMISSION:
+                return new CertServerResponse(
+                    RequestStatus.CR_PENDING,
+                    certRequest.GetRequestIdString()
+                    );
+            case CR_DISP_DENIED:
+                return new CertServerResponse(
+                    RequestStatus.CR_DENIED,
+                    certRequest.GetRequestIdString()
+                    );
+            default:
+                throw new NotSupportedException($"Unknown or unsupported answer from Cert Server [{responseCode}]");
         }
-        return caResponse;
     }
 #endif
 
-    private CAResponse CertReq(string arguments)
+    private CertServerResponse CertReq(string arguments)
     {
         Process process = new System.Diagnostics.Process();
         process.StartInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
@@ -154,35 +165,35 @@ public class CAServer
             throw new Exception($"certreq.exe exited with code: {process.ExitCode}\nArguments: \"{process.StartInfo.Arguments}\" Output: \n{output}");
         }
 
-        CAResponse caResponse = new CAResponse();
-
         if (output.Contains("Certificate retrieved(Issued) Issued"))
         {
-            caResponse.ResponseCode = CR_DISP_ISSUED;
-            caResponse.Certificate = new X509Certificate2(certReqCrtTmpFile);
+            return new CertServerResponse(
+                RequestStatus.CR_ISSUED,
+                new X509Certificate2(certReqCrtTmpFile)
+                );
         }
         else if (output.Contains("Certificate not issued (Denied)"))
-            caResponse.ResponseCode = CR_DISP_DENIED;
+            return new CertServerResponse(RequestStatus.CR_DENIED);
         else if (output.Contains("Certificate request is pending: Taken Under Submission"))
         {
             Regex requestIdRegEx = new Regex("RequestId: \"?(\\d+)\"?");
-            string r = requestIdRegEx.Match(output).Groups[1].Value;
-            caResponse.RequestId = int.Parse(requestIdRegEx.Match(output).Groups[1].Value);
-            caResponse.ResponseCode = CR_DISP_UNDER_SUBMISSION;
+            string requestId = requestIdRegEx.Match(output).Groups[1].Value;
+            return new CertServerResponse(
+                RequestStatus.CR_PENDING,
+                requestId
+                );
         }
         else
-            caResponse.ResponseCode = CR_DISP_ERROR;
-        
-        return caResponse;
+            throw new NotSupportedException($"Unknown or unsupported answer from Cert Server\n{output}");
     }
 
-    private CAResponse RequestWithCertReq(CertificateTemplate certTemplate, string csrData)
+    private CertServerResponse RequestWithCertReq(CertificateTemplate certTemplate, string csrData)
     {        
         File.WriteAllText(certReqCsrTmpFile, csrData);
         return CertReq($"-submit -config {Config} -attrib \"CertificateTemplate:{certTemplate.Name}\" {certReqCsrTmpFile} {certReqCrtTmpFile}");
     }
 
-    private CAResponse RetrieveWithCertReq(int requestId)
+    private CertServerResponse RetrieveWithCertReq(string requestId)
     {
         return CertReq($"-retrieve -config {Config} {requestId} {certReqCrtTmpFile}");
     }
