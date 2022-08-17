@@ -190,11 +190,7 @@ internal class MainViewModel : Presenter
         string msg = $"YK-Enroll\n" +
             $"{copyright}\n" +
             $"\n" +
-#if (CERTCLILib)
-            $"CERTCLILib support: Enabled\n" +
-#else
-            $"CERTCLILib support: Disabled\n" +
-#endif
+            $"SUPPORTS_CERTCLILib: {YKEnrollLib.SUPPORTS_CERTLIBCli.ToString().ToUpper()}\n" +
             $"\n" +
             $"YKEnroll.Win version {winV} buildinfo: {(string.IsNullOrWhiteSpace(winBuildInfo) ? "<no data>" : winBuildInfo)}\n" +
             $"YKEnroll.Lib version {libV} buildinfo: {(string.IsNullOrWhiteSpace(libBuildInfo) ? "<no data>" : libBuildInfo)}\n\n" +

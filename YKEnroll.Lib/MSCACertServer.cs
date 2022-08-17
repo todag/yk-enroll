@@ -1,11 +1,10 @@
-﻿#define CERTCLILib
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Text.RegularExpressions;
-#if (CERTCLILib)
+#if (SUPPORTS_CERTCLILib)
 using CERTCLILib;
 #endif
 
@@ -56,7 +55,7 @@ public class MSCACertServer : ICertServer
     /// <exception cref="NotSupportedException"></exception>
     public CertServerResponse RequestCertificate(CertificateTemplate certTemplate, string csrData)
     {
-#if (CERTCLILib)
+#if (SUPPORTS_CERTCLILib)
         if(!Settings.UseCertReq)
             return RequestWithCERTCLILib(certTemplate, csrData);
         else
@@ -73,7 +72,7 @@ public class MSCACertServer : ICertServer
     /// <returns>CertServerResponse object.</returns>
     public CertServerResponse RetrieveCertificate(string requestId)
     {
-#if (CERTCLILib)
+#if (SUPPORTS_CERTCLILib)
         if(!Settings.UseCertReq)
             return RetrieveWithCERTCLILib(requestId);
         else
@@ -83,7 +82,7 @@ public class MSCACertServer : ICertServer
 #endif 
     }
 
-#if (CERTCLILib)
+#if (SUPPORTS_CERTCLILib)
     private CertServerResponse RequestWithCERTCLILib(CertificateTemplate certTemplate, string csrData)
     {
         var attr = "CertificateTemplate:" + certTemplate.Name;
