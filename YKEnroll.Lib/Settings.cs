@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using Yubico.YubiKey.Piv;
 
 namespace YKEnroll.Lib;
@@ -92,6 +93,16 @@ public static class Settings
         catch (Exception ex)
         {
             Logger.Log($"Failed to load settings file from {path}, Exception: {ex.Message}");
+        }
+        
+        Logger.Log("Current settings:");
+        foreach (var key in defaults.Keys)
+        {
+            PropertyInfo? prop = typeof(Settings).GetProperty(key);
+            object? value = prop!.GetValue(null);
+            if(value!.GetType() == typeof(string[]))
+                value = string.Join(",", (string[])value);
+            Logger.Log($"{key}={value}");
         }
     }
 
