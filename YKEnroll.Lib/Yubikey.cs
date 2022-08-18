@@ -90,24 +90,32 @@ public class YubiKey : INotifyPropertyChanged
         return PivSession.TryChangeManagementKey();
     }
 
-    public string[] AvailableUsbCapabilities
-    {
-        get { return Array.ConvertAll(IYubiKeyDevice.AvailableUsbCapabilities.ToString().Split(','), s => s.Trim()); }
-    }
+    public string[] AvailableUsbCapabilities => RenderCapabilities(IYubiKeyDevice.AvailableUsbCapabilities);
 
-    public string[] EnabledUsbCapabilities
-    {
-        get { return Array.ConvertAll(IYubiKeyDevice.EnabledUsbCapabilities.ToString().Split(','), s => s.Trim()); }
-    }
+    public string[] EnabledUsbCapabilities => RenderCapabilities(IYubiKeyDevice.EnabledUsbCapabilities);        
 
-    public string[] AvailableNfcCapabilities
-    {
-        get { return Array.ConvertAll(IYubiKeyDevice.AvailableNfcCapabilities.ToString().Split(','), s => s.Trim()); }
-    }
+    public string[] AvailableNfcCapabilities => RenderCapabilities(IYubiKeyDevice.AvailableNfcCapabilities);
 
-    public string[] EnabledNfcCapabilities
+    public string[] EnabledNfcCapabilities => RenderCapabilities(IYubiKeyDevice.EnabledNfcCapabilities);
+
+    /// <summary>
+    /// The SDK seems to report YubiKeyCapabilities.All for some devices,
+    /// since we cannot work with just this value, render this to a string
+    /// array containing all capabilities except YubiKeyCapabilities.None
+    /// and YubiKeyCapabilities.All
+    /// </summary>
+    /// <param name="capabilities"></param>
+    /// <returns>List of available or enabled capabilities.</returns>
+    private string[] RenderCapabilities(YubiKeyCapabilities capabilities)
     {
-        get { return Array.ConvertAll(IYubiKeyDevice.EnabledNfcCapabilities.ToString().Split(','), s => s.Trim()); }
+        if (capabilities == YubiKeyCapabilities.All)
+        {
+            return Enum.GetValues(typeof(YubiKeyCapabilities)).Cast<YubiKeyCapabilities>().Select(v => v.ToString()).Where(v => !v.Equals("All")).Where(v => !v.Equals("None")).ToArray();
+        }
+        else
+        {
+            return Array.ConvertAll(capabilities.ToString().Split(','), s => s.Trim());
+        }
     }
 
     public byte[] GenerateCertificateSigningRequest(Slot slot, AsymmetricAlgorithm publicKey,
