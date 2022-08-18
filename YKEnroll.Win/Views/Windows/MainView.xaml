@@ -71,8 +71,34 @@
                     <DataGridTextColumn Header="Form factor" Width="Auto" Binding="{Binding FormFactor}"/>
                     <DataGridTextColumn Header="Serial" Width="Auto" Binding="{Binding SerialNumber}"/>
                     <DataGridTextColumn Header="Firmware" Width="Auto" Binding="{Binding FirmwareVersion}"/>
-                    <DataGridTextColumn Header="USB Applications" Width="Auto" Binding="{Binding EnabledUsbCapabilities, Converter={StaticResource ListToStringConverter}}"/>
-                    <DataGridTextColumn Header="NFC Applications" Width="Auto" Binding="{Binding EnabledNfcCapabilities, Converter={StaticResource ListToStringConverter}}"/>
+                    <DataGridTemplateColumn Width="Auto">
+                        <DataGridTemplateColumn.Header>
+                            <Grid ToolTip="Enabled USB applications" ToolTipService.InitialShowDelay="0">
+                                <Path Stretch="Uniform" VerticalAlignment="Center" Height="16" Width="16" Fill="{StaticResource Accent.ForegroundBrush}" Data="{StaticResource Icons.Usb}">
+                                    <Path.LayoutTransform>
+                                        <RotateTransform Angle="90"></RotateTransform>
+                                    </Path.LayoutTransform>
+                                </Path>
+                            </Grid>
+                        </DataGridTemplateColumn.Header>
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock HorizontalAlignment="Center" Text="{Binding EnabledUsbCapabilities, Converter={StaticResource YubiKeyApplicationsArrayToCountConverter}}"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn Width="Auto">
+                        <DataGridTemplateColumn.Header>
+                            <Grid ToolTip="Enabled NFC applications" ToolTipService.InitialShowDelay="0">
+                                <Path Stretch="Uniform"  Height="18" Width="18" Fill="{StaticResource Accent.ForegroundBrush}" Data="{StaticResource Icons.Nfc}"/>
+                            </Grid>
+                        </DataGridTemplateColumn.Header>
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock HorizontalAlignment="Center" Text="{Binding EnabledNfcCapabilities, Converter={StaticResource YubiKeyApplicationsArrayToCountConverter}}"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
                     <DataGridTextColumn Width="*"/>
                 </DataGrid.Columns>
             </DataGrid>

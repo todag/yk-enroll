@@ -15,6 +15,7 @@
             <converters:ListToStringConverter x:Key="ListToStringConverter"/>
             <converters:ListToMultiLineStringConverter x:Key="ListToMultiLineStringConverter"/>
             <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
+            <converters:YubiKeyApplicationsArrayToCountConverter x:Key="YubiKeyApplicationsArrayToCountConverter"/>
             <!--<SolidColorBrush x:Key="AccentColorBrush" Color="#007ACC" />-->
             
             <ResourceDictionary.MergedDictionaries>
